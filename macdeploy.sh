@@ -4,7 +4,7 @@ echo PanConverter
 
 echo - macdeployqt 
 
-cd ~/Development/aforge/PanConverter
+cd ~/Development/GitHub/PanConverter
 
 rm -R '../../Distribution/PanConverter/PanConverter.app'
 cp -R './PanConverter-build-Desktop_Qt_5_3_2_LLDB-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'

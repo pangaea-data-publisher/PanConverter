@@ -94,6 +94,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
     s_FilenameExpedition = s_Expedition;
     s_FilenameExpedition.replace( "/", "_" );
+    s_FilenameExpedition.replace( ".", "_" );
 
     s_FilenameOut = fi.absolutePath() + "/" + s_FilenameExpedition + "_mastertrack";
 
@@ -360,10 +361,10 @@ QString MainWindow::findExpedition( const QString &s_Filename, const QStringList
 
     if ( fi.baseName().toLower().startsWith( "ps" ) == true )
     {
-        if ( fi.baseName().section( "_", 0, 0 ).mid( 2 ).toInt() < 82 )
-            s_Expedition = fi.baseName().section( "_", 0, 0 ) + "/" + fi.baseName().section( "_", 1, 1 );
+        if ( fi.completeBaseName().section( "_", 0, 0 ).mid( 2 ).toFloat() < 82. )
+            s_Expedition = fi.completeBaseName().section( "_", 0, 0 ) + "/" + fi.completeBaseName().section( "_", 1, 1 );
         else
-            s_Expedition = fi.baseName().section( "_", 0, 0 );
+            s_Expedition = fi.completeBaseName().section( "_", 0, 0 ); // PS87 or PS88.1
 
         return( s_Expedition );
     }
@@ -416,7 +417,7 @@ int MainWindow::findExpeditionID( const QString &s_Expedition, const QStringList
 
     while ( j<sl_crInput.count() )
     {
-        if ( sl_crInput.at( j ).section( "\t", 1, 1 ) ==  s_Expedition )
+        if ( sl_crInput.at( j ).section( "\t", 1, 1 ) == s_Expedition )
             return( j );
         else
             j++;
