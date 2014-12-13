@@ -7,18 +7,10 @@ echo - macdeployqt
 cd ~/Development/GitHub/PanConverter
 
 rm -R '../../Distribution/PanConverter/PanConverter.app'
-cp -R './PanConverter-build-Desktop_Qt_5_3_2_LLDB-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'
+cp -R './PanConverter-build-Desktop_Qt_5_4_0_clang_64bit-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'
 cp './trunk/Resources/Info.plist' '../../Distribution/PanConverter/PanConverter.app/Contents/Info.plist'
 
-/Developer/Qt/5.3/clang_64/bin/macdeployqt '../../Distribution/PanConverter/PanConverter.app'
-
-../patchQtFramework.sh '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtCore.framework'
-../patchQtFramework.sh '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtGui.framework'
-../patchQtFramework.sh '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtNetwork.framework'
-../patchQtFramework.sh '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtPositioning.framework'
-../patchQtFramework.sh '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtPrintSupport.framework'
-../patchQtFramework.sh '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtWidgets.framework'
-../patchQtFramework.sh '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtXml.framework'
+/Developer/Qt/5.4/clang_64/bin/macdeployqt '../../Distribution/PanConverter/PanConverter.app'
 
 echo - code signing
 
@@ -30,7 +22,6 @@ codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Insti
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtWidgets.framework'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtXml.framework'
 
-codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/accessible/libqtaccessiblewidgets.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/bearer/libqcorewlanbearer.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/bearer/libqgenericbearer.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqdds.dylib'
@@ -65,7 +56,7 @@ cd ~/Development/Distribution
 
 echo - verify package
 
-codesign -dvv '/Volumes/PanConverter/PanConverter.app'
+codesign -d '/Volumes/PanConverter/PanConverter.app'
 
 echo
 hdiutil detach '/Volumes/PanConverter'
