@@ -483,7 +483,7 @@ void MainWindow::doConvertMastertrack()
 
     if ( existsFirstFile( gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList ) == true )
     {
-        if ( ( n = readFile( fi.absoluteFilePath() + "/" + "CruiseReports_Polarstern.txt", sl_crInput, _LATIN1_ ) ) < 1 )
+        if ( ( n = readFile( fi.absoluteFilePath() + "/" + "CruiseReports_Polarstern.txt", sl_crInput, _UTF8_ ) ) < 1 )
             err = _FILENOTEXISTS_;
 
         initFileProgress( gsl_FilenameList.count(), gsl_FilenameList.at( 0 ), tr( "Convert Mastertrack data..." ) );
