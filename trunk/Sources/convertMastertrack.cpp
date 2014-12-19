@@ -73,7 +73,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
         if ( i_ExpeditionID > 0 )
         {
-            s_Cruise                     = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 );
+            s_Cruise                     = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 );
             s_LocationStart              = sl_crInput.at( i_ExpeditionID ).section( "\t", 4, 4 );
             s_LocationEnd                = sl_crInput.at( i_ExpeditionID ).section( "\t", 6, 6 );
             s_DateBegin                  = sl_crInput.at( i_ExpeditionID ).section( "\t", 3, 3 );
@@ -84,6 +84,12 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
             s_Mastertrack_generalized    = sl_crInput.at( i_ExpeditionID ).section( "\t", 28, 28 );
             s_Mastertrack_fullresolution = sl_crInput.at( i_ExpeditionID ).section( "\t", 29, 29 );
             s_FurtherDetails             = sl_crInput.at( i_ExpeditionID ).section( "\t", 30, 30 );
+
+            if ( ( s_Expedition.toLower().startsWith( "ant-" ) == true ) || ( s_Expedition.toLower().startsWith( "ark-" ) == true ) )
+            {
+                s_Expedition = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ) + "/" + sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ).section( "/", 1, 1 );
+                s_Cruise     = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 );
+            }
         }
     }
 
@@ -378,7 +384,7 @@ QString MainWindow::findExpedition( const QString &s_Filename, const QStringList
         {
             if ( sl_crInput.at( j ).section( "\t", 1, 1 ) ==  s_Expedition )
             {
-                s_Expedition = sl_crInput.at( j ).section( "\t", 0, 0 ) + "/" + sl_crInput.at( j ).section( "\t", 1, 1 ).section( "/", 1, 1 );
+                s_Expedition = sl_crInput.at( j ).section( "\t", 1, 1 );
 
                 return( s_Expedition );
             }
