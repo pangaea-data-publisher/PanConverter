@@ -102,8 +102,11 @@ void MainWindow::createActions()
     parseTreeRingXMLAction = new QAction(trUtf8("Tree Ring Data Standard (TRiDaS)"), this);
     connect(parseTreeRingXMLAction, SIGNAL(triggered()), this, SLOT(doParseTreeRingXML()));
 
-    convertMastertrackAction = new QAction(trUtf8("Mastertrack"), this);
+    convertMastertrackAction = new QAction(trUtf8("Mastertrack (convert FIELAX -> PANGAEA)"), this);
     connect(convertMastertrackAction, SIGNAL(triggered()), this, SLOT(doConvertMastertrack()));
+
+    createMastertrackImportFileAction = new QAction(trUtf8("Mastertrack (create import file)"), this);
+    connect(createMastertrackImportFileAction, SIGNAL(triggered()), this, SLOT(doCreateMastertrackImportFile()));
 
     convertTSGAction = new QAction(trUtf8("Thermosalinograph (TSG)"), this);
     connect(convertTSGAction, SIGNAL(triggered()), this, SLOT(doConvertTSG()));
@@ -196,6 +199,8 @@ void MainWindow::createMenus()
     converterMenu->addAction( convertCHUAN_stationAction );
     converterMenu->addSeparator();
     converterMenu->addAction( convertMastertrackAction );
+    converterMenu->addAction( createMastertrackImportFileAction );
+    converterMenu->addSeparator();
     converterMenu->addAction( convertTSGAction );
     converterMenu->addSeparator();
     converterMenu->addAction( createGpxFileAction );
