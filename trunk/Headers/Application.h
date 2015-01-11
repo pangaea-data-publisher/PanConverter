@@ -105,6 +105,7 @@ public:
     int convertCHUAN_moving( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertSOCAT( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertMastertrack( const QString &FilenameIn, const int CodecInput, const int CodecOutput, const int EOL, const QStringList &crInput, const int NumOfFiles );
+    int createMastertrackImportFile( const QString &FilenameIn, const int CodecInput, const int CodecOutput, const int EOL, const QStringList &crInput, const int NumOfFiles );
     int convertNOAA_IOAS( const int Type, const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertTSG( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int CliwocConverter( const QString &FilenameIn, const QString &FilenameOut, const QString &FilenameConf, const int NumOfFiles );
@@ -122,9 +123,9 @@ public:
     QString extractLongitude( const QString& InputStr );
 
     QString findBasis( const QString &Filename );
-    QString findExpedition( const QString &Filename, const QStringList &crInput );
+    QString findExpedition( const QString &Filename, const QStringList &sl_crInput );
 
-    int findExpeditionID( const QString &Filename, const QStringList &crInput );
+    int findExpeditionID( const QString &Expedition, const QStringList &crInput );
 
 protected:
     void dragEnterEvent( QDragEnterEvent *event );
@@ -154,6 +155,7 @@ private slots:
     void doConvertCHUAN_station();
     void doConvertCHUAN_moving();
     void doConvertMastertrack();
+    void doCreateMastertrackImportFile();
 
     void doConvertNOAA_IOAS( const int Type );
     void doConvertNOAA_IOAS_Benthos();
@@ -193,6 +195,8 @@ private:
     int incProgress( const int NumOfFiles, const int Step );
     int readFile( const QString &FilenameIn, QStringList &Input, const int Codec = -1, const int NumOfFiles = 0, const qint64 Bytes = 0 );
     int removeFile( const QString &Filename );
+    int downloadFile( const QString &Url, const QString &absoluteFilePath );
+
     unsigned int incProgress( const int NumOfFiles, const unsigned int filesize, const unsigned int length, const QString &InputStr );
     void appendItem( QStringList &List, const QString &Item, const QString &SS = "", const QString &RS = "" );
     void clearFilenameList( int &ActionNumber, QStringList &FilenameList );
@@ -249,6 +253,7 @@ private:
     QAction *convertCHUAN_stationAction;
     QAction *convertCHUAN_movingAction;
     QAction *convertMastertrackAction;
+    QAction *createMastertrackImportFileAction;
 
     QAction *convertNOAA_IOAS_BENTHOS_Action;
     QAction *convertNOAA_IOAS_HYDROLOGY_Action;
