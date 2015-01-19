@@ -293,7 +293,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     s_FilenameOut = s_Expedition;
     s_FilenameOut = fi.absolutePath() + "/" + s_FilenameOut.replace( "/", "_" ) + "_mastertrack";
 
-    if ( s_Basis == "ps" )
+    if ( ( s_Basis == "ps" ) || ( s_Basis == "he" ) )
     {
         i_ExpeditionID = findExpeditionID( fi.completeBaseName(), sl_crInput );
 
@@ -302,7 +302,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
         if ( i_ExpeditionID > 0 )
         {
-            if ( s_Expedition.startsWith( "PS" ) == true )
+            if ( ( s_Expedition.startsWith( "PS" ) == true ) || ( s_Expedition.startsWith( "HE" ) == true ) )
             {
                 s_Expedition                 = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 );
                 s_ExpeditionOptional         = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 );
@@ -375,28 +375,18 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
         if ( s_CruiseReport.isEmpty() == false )
             timp << "Reference:\t" << s_CruiseReport << " * RELATIONTYPE: 12" << s_EOL;  // Cruise report (Related to)
-        else
-            timp << "Reference:\t" << "@CR@" << s_Expedition << "@ * RELATIONTYPE: 12" << s_EOL;  // Cruise report (Related to)
 
         if ( s_Mastertrack_fullresolution.isEmpty() == false )
             timp << "Reference:\t" << s_Mastertrack_fullresolution << " * RELATIONTYPE: 13" << s_EOL;  // Link to master track in full resolution (Other version)
-        else
-            timp << "Reference:\t" << "@MT@" << s_Expedition << "@ * RELATIONTYPE: 13" << s_EOL;  // Link to master track in full resolution (Other version)
 
         if ( s_StationList.isEmpty() == false )
             timp << "Reference:\t" << s_StationList << " * RELATIONTYPE: 17" << s_EOL;  // Station list (Further details)
-        else
-            timp << "Reference:\t" << "@SL@" << s_Expedition << "@ * RELATIONTYPE: 17" << s_EOL;  // Station list (Further details)
 
         if ( s_Mastertrack_generalized.isEmpty() == false )
             timp << "Reference:\t" << s_Mastertrack_generalized << " * RELATIONTYPE: 17" << s_EOL;  // Link to master track generalized (Further details)
-        else
-            timp << "Reference:\t" << "@MTG@" << s_Expedition << "@ * RELATIONTYPE: 17" << s_EOL;  // Link to master track generalized (Further details)
 
         if ( s_TracklineMap.isEmpty() == false )
             timp << "Reference:\t" << s_TracklineMap << " * RELATIONTYPE: 17" << s_EOL;  // Trackline map (Further details)
-        else
-            timp << "Reference:\t" << "@TM@" << s_Expedition << "@ * RELATIONTYPE: 17" << s_EOL;  // Trackline map (Further details)
 
         timp << "Export Filename:\t" << s_FilenameExpedition << "_mastertrack" << s_EOL;
         timp << "Event:\t" << s_Expedition << "-track" << s_EOL;
@@ -683,6 +673,7 @@ void MainWindow::doCreateMastertrackImportFile()
 // download CruiseReports_xxx.txt
 
     err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
+    err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
 
 // **********************************************************************************************
 
@@ -694,15 +685,18 @@ void MainWindow::doCreateMastertrackImportFile()
         {
             if ( buildFilename( gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList.at( i ), s_FilenameIn, s_FilenameOut ) == true )
             {
+                sl_crInput.clear();
+
                 s_Basis = findBasis( s_FilenameIn );
 
-                if ( ( s_Basis == "ps" ) && ( sl_crInput.count() == 0 ) )
-                {
+                if ( s_Basis == "ps" )
                     n = readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ), sl_crInput, _UTF8_ );
 
-                    if ( sl_crInput.count() == 0 )
-                        err = _FILENOTEXISTS_;
-                }
+                if ( s_Basis == "he" )
+                    n = readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ), sl_crInput, _UTF8_ );
+
+                if ( sl_crInput.count() == 0 )
+                    err = _FILENOTEXISTS_;
 
                 if ( err == _NOERROR_ )
                     err = createMastertrackImportFile( s_FilenameIn, gi_CodecInput, gi_CodecOutput, gi_EOL, sl_crInput, gsl_FilenameList.count() );
