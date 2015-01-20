@@ -589,7 +589,6 @@ int MainWindow::findExpeditionID( const QString &s_Expedition, const QStringList
 void MainWindow::doConvertMastertrack()
 {
     int     i               = 0;
-    int     n               = 0;
     int     err             = 0;
     int     stopProgress    = 0;
 
@@ -619,7 +618,7 @@ void MainWindow::doConvertMastertrack()
 
                 if ( ( s_Basis == "ps" ) && ( sl_crInput.count() == 0 ) )
                 {
-                    n = readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ), sl_crInput, _UTF8_ );
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ), sl_crInput, _UTF8_ );
 
                     if ( sl_crInput.count() == 0 )
                         err = _FILENOTEXISTS_;
@@ -658,7 +657,6 @@ void MainWindow::doConvertMastertrack()
 void MainWindow::doCreateMastertrackImportFile()
 {
     int     i               = 0;
-    int     n               = 0;
     int     err             = 0;
     int     stopProgress    = 0;
 
@@ -690,10 +688,10 @@ void MainWindow::doCreateMastertrackImportFile()
                 s_Basis = findBasis( s_FilenameIn );
 
                 if ( s_Basis == "ps" )
-                    n = readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ), sl_crInput, _UTF8_ );
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ), sl_crInput, _UTF8_ );
 
                 if ( s_Basis == "he" )
-                    n = readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ), sl_crInput, _UTF8_ );
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ), sl_crInput, _UTF8_ );
 
                 if ( sl_crInput.count() == 0 )
                     err = _FILENOTEXISTS_;
