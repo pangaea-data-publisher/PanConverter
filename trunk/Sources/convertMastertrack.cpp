@@ -132,7 +132,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
     compressFile( s_FilenameOut );
 
-    QFileInfo fzip( s_FilenameOut.replace( ".txt", ".zip" ) );
+    QFileInfo fzip( s_FilenameOut.replace( "_generalized.txt", ".zip" ) );
 
     if ( fzip.size() > 1000*1024 )
         s_FileSize = QString( "%1 MB" ).arg( fzip.size()/1024/1024 );
@@ -174,7 +174,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
             tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
 
             tref << "Trackline map and processing report for navigation sensors from POLARSTERN cruise " << s_Expedition << " (" << s_ExpeditionOptional << ")" << "\t";
-            tref << "http://doi.pangaea.de/10013/epic." << s_Expedition << s_EOL;
+            tref << "hdl:10013/epic." << s_Expedition << s_EOL;
         }
 
         if ( ( s_Expedition.startsWith( "ANT-" ) == true ) || ( s_Expedition.startsWith( "ARK-" ) == true ) )
@@ -195,7 +195,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
             tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
 
             tref << "Trackline map and processing report for navigation sensors from POLARSTERN cruise " << s_Expedition << "\t";
-            tref << "http://doi.pangaea.de/10013/epic." << s_FilenameExpedition << s_EOL;
+            tref << "hdl:10013/epic." << s_FilenameExpedition << s_EOL;
         }
 
     }
@@ -214,7 +214,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
         tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
 
         tref << "Trackline map and processing report for navigation sensors from HEINCKE cruise " << s_Expedition << "\t";
-        tref << "http://doi.pangaea.de/10013/epic." << s_Expedition << s_EOL;
+        tref << "hdl:10013/epic." << s_Expedition << s_EOL;
     }
 
     fref.close();
