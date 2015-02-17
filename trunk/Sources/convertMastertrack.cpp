@@ -25,6 +25,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
     QString     s_ExpeditionOptional         = "";
 
     QString     s_FilenameOut                = "";
+    QString     s_FilenameZip                = "";
     QString     s_FilenameRefImp             = "";
     QString     s_FilenameExpedition         = "";
 
@@ -52,6 +53,8 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
     s_FilenameOut    = fi.absolutePath() + "/" + s_FilenameOut.replace( "/", "_" ) + "_mastertrack";
     s_FilenameRefImp = s_Expedition;
     s_FilenameRefImp = fi.absolutePath() + "/" + s_FilenameRefImp.replace( "/", "_" ) + "_ref_imp.txt";
+    s_FilenameZip    = s_Expedition;
+    s_FilenameZip    = fi.absolutePath() + "/" + s_FilenameZip.replace( "/", "_" ) + "_mastertrack.zip";
 
     if ( s_FilenameIn.contains( "_generalized" ) == true )
         s_FilenameOut.append( "_generalized" );
@@ -132,10 +135,10 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
     compressFile( s_FilenameOut );
 
-    QFileInfo fzip( s_FilenameOut.replace( "_generalized.txt", ".zip" ) );
+    QFileInfo fzip( s_FilenameZip );
 
     if ( fzip.size() > 1000*1024 )
-        s_FileSize = QString( "%1 MB" ).arg( fzip.size()/1024/1024 );
+        s_FileSize = QString( "%1 MB" ).arg( (double) fzip.size()/1024./1024., 0, 'f', 1 );
     else if ( fzip.size() > 1024 )
         s_FileSize = QString( "%1 kBytes" ).arg( fzip.size()/1024 );
     else if ( fzip.size() > 0 )
