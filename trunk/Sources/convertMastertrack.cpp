@@ -391,7 +391,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         if ( s_TracklineMap.isEmpty() == false )
             timp << "Reference:\t" << s_TracklineMap << " * RELATIONTYPE: 17" << s_EOL;  // Trackline map (Further details)
 
-        timp << "Export Filename:\t" << s_FilenameExpedition << "_mastertrack" << s_EOL;
+        timp << "Export Filename:\t" << s_FilenameExpedition << "_link-to-mastertrack" << s_EOL;
         timp << "Event:\t" << s_Expedition << "-track" << s_EOL;
         timp << "PI:\t506" << s_EOL;
         timp << "Parameter:	1599 * PI: 506 * METHOD: 43 * FORMAT: yyyy-MM-dd'T'HH:mm" << s_EOL;
