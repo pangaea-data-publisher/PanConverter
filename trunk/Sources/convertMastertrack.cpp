@@ -361,15 +361,26 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         if ( s_Author.isEmpty() == false )
             timp << "Author:\t" << s_Author << s_EOL;
         else
-            timp << "Author:\t" << "@A@" << s_Expedition << "@" << s_EOL;
+            timp << "Author:\t" << "22483" << s_EOL; // Anonymous
 
         timp << "Source:\t32" << s_EOL;
 
-        if ( s_Basis == "ps" )
-            timp << "Title:\tStation list and links to master tracks in different resolutions of POLARSTERN cruise " << s_Expedition;
+        if ( s_StationList.isEmpty() == false )
+        {
+             if ( s_Basis == "ps" )
+                timp << "Title:\tStation list and links to master tracks in different resolutions of POLARSTERN cruise " << s_Expedition;
 
-        if ( s_Basis == "he" )
-            timp << "Title:\tStation list and links to master tracks in different resolutions of HEINCKE cruise " << s_Expedition;
+            if ( s_Basis == "he" )
+                timp << "Title:\tStation list and links to master tracks in different resolutions of HEINCKE cruise " << s_Expedition;
+        }
+        else
+        {
+            if ( s_Basis == "ps" )
+               timp << "Title:\tLinks to master tracks in different resolutions of POLARSTERN cruise " << s_Expedition;
+
+           if ( s_Basis == "he" )
+               timp << "Title:\tLinks to master tracks in different resolutions of HEINCKE cruise " << s_Expedition;
+        }
 
         if ( ( s_LocationStart.isEmpty() == false ) && ( s_LocationEnd.isEmpty() == false )  && ( s_DateBegin.isEmpty() == false )  && ( s_DateEnd.isEmpty() == false ) )
             timp << ", " << s_LocationStart << " - " << s_LocationEnd << ", " << s_DateBegin << " - "  << s_DateEnd;
@@ -382,11 +393,11 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         if ( s_Mastertrack_fullresolution.isEmpty() == false )
             timp << "Reference:\t" << s_Mastertrack_fullresolution << " * RELATIONTYPE: 13" << s_EOL;  // Link to master track in full resolution (Other version)
 
-        if ( s_StationList.isEmpty() == false )
-            timp << "Reference:\t" << s_StationList << " * RELATIONTYPE: 17" << s_EOL;  // Station list (Further details)
-
         if ( s_Mastertrack_generalized.isEmpty() == false )
             timp << "Reference:\t" << s_Mastertrack_generalized << " * RELATIONTYPE: 17" << s_EOL;  // Link to master track generalized (Further details)
+
+        if ( s_StationList.isEmpty() == false )
+            timp << "Reference:\t" << s_StationList << " * RELATIONTYPE: 17" << s_EOL;  // Station list (Further details)
 
         if ( s_TracklineMap.isEmpty() == false )
             timp << "Reference:\t" << s_TracklineMap << " * RELATIONTYPE: 17" << s_EOL;  // Trackline map (Further details)
@@ -525,10 +536,21 @@ QString MainWindow::findExpedition( const QString &s_Filename, const QStringList
 
 // **********************************************************************************************
 
+    if ( s_Filename.toLower().startsWith( "he" ) == true )
+    {
+        s_Expedition = s_Filename.section( "_nav", 0, 0 ).replace( "_", "/" );
+        return( s_Expedition );
+    }
+
+    if ( s_Filename.toLower().startsWith( "so" ) == true )
+    {
+        s_Expedition = s_Filename.section( "_nav", 0, 0 ).replace( "_", "/" );
+        return( s_Expedition );
+    }
+
     if ( s_Filename.toLower().startsWith( "ps" ) == true ) // can't handle PS88.1
     {
         s_Expedition = s_Filename.section( "_nav", 0, 0 ).replace( "_", "/" );
-
         return( s_Expedition );
     }
 
@@ -546,12 +568,6 @@ QString MainWindow::findExpedition( const QString &s_Filename, const QStringList
 
         return( s_Expedition );
     }
-
-    if ( s_Filename.toLower().startsWith( "he" ) == true )
-        return( s_Filename.section( "_", 0, 0 ) );
-
-    if ( s_Filename.toLower().startsWith( "so" ) == true )
-        return( s_Filename.section( "_", 0, 0 ) );
 
     return( "unknown" );
 }
