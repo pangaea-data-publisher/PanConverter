@@ -7,10 +7,10 @@ echo - macdeployqt
 cd ~/Development/GitHub/PanConverter
 
 rm -R '../../Distribution/PanConverter/PanConverter.app'
-cp -R './build-PanConverter-Desktop_Qt_5_4_2_clang_64bit-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'
+cp -R './build-PanConverter-Desktop_Qt_5_5_0_clang_64bit-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'
 cp './trunk/Resources/Info.plist' '../../Distribution/PanConverter/PanConverter.app/Contents/Info.plist'
 
-/Developer/Qt/5.4/clang_64/bin/macdeployqt '../../Distribution/PanConverter/PanConverter.app'
+/Developer/Qt/5.5/clang_64/bin/macdeployqt '../../Distribution/PanConverter/PanConverter.app'
 
 echo - code signing
 
@@ -21,6 +21,7 @@ codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Insti
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtPrintSupport.framework'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtWidgets.framework'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtXml.framework'
+codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/Frameworks/QtDBus.framework'
 
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/bearer/libqcorewlanbearer.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/bearer/libqgenericbearer.dylib'
