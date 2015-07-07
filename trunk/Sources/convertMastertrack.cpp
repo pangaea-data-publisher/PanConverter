@@ -280,8 +280,6 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     QStringList sl_Parameter;
     QStringList sl_Reference;
 
-    QString     s_EOL                        = setEOLChar( i_EOL );
-
     QStringList sl_Input;
 
     QDateTime   DateTime1( QDate( 0001, 01, 01 ) );
@@ -409,7 +407,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
             sl_Reference.append( Reference( s_Mastertrack_fullresolution, num2str( _OTHERVERSION_ ) ) );       // Link to master track in full resolution (Other version)
 
         if ( s_Mastertrack_generalized.isEmpty() == false )
-            sl_Reference.append( Reference( s_CruiseReport, num2str( _FURTHERDETAILS_ ) ) );                   // Link to master track generalized (Further details)
+            sl_Reference.append( Reference( s_Mastertrack_generalized, num2str( _FURTHERDETAILS_ ) ) );        // Link to master track generalized (Further details)
 
         if ( s_StationList.isEmpty() == false )
             sl_Reference.append( Reference( s_StationList, num2str( _FURTHERDETAILS_ ) ) );                    // Link to Station list (Further details)
@@ -433,12 +431,12 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
             if ( sl_Reference.count() > 0 )
             {
-                timp << qs << tr( "ReferenceIDs" ) << qe << "[ " << s_EOL;
+                timp << qs << tr( "ReferenceIDs" ) << qe << "[ " << eol;
 
                 for ( int i=0; i<sl_Reference.count()-1; i++ )
-                    timp << sl_Reference.at( i ) << "," << s_EOL;
+                    timp << sl_Reference.at( i ) << "," << eol;
 
-                timp << sl_Reference.at( sl_Reference.count()-1 ) << " ]," << s_EOL;
+                timp << sl_Reference.at( sl_Reference.count()-1 ) << " ]," << eol;
             }
 
             timp << ExportFilename( s_EventLabel, tr( "link-to-mastertrack" ) );
@@ -454,7 +452,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
 // **********************************************************************************************
 
-        timp << "1599\t1600\t1601\t2960\t21892" << s_EOL;
+        timp << "1599\t1600\t1601\t2960\t21892" << eol;
 
         i = 1;
 
@@ -494,7 +492,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
                     s_OutputStr.append( DateTime2.toString( Qt::ISODate ) + "\t" + sl_Input.at( i ).section( "\t", 1, 1 ) + "\t" + sl_Input.at( i ).section( "\t", 2, 2 ) + "\t" );
                     s_OutputStr.append( QString( "%1\t%2").arg( d_Distance/d_Time * 3.6 / 1.853 ).arg( d_Bearing ) );
 
-                    timp << s_OutputStr << s_EOL;
+                    timp << s_OutputStr << eol;
 
                     DateTime1 = DateTime2;
                     Pos1      = Pos2;
@@ -514,8 +512,8 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     }
     else
     {
-        timp << "This routine can't create a master track from a generalized master track." << s_EOL;
-        timp << "Please choose " << s_Expedition << "_nav.txt and try again" << s_EOL;
+        timp << "This routine can't create a master track from a generalized master track." << eol;
+        timp << "Please choose " << s_Expedition << "_nav.txt and try again" << eol;
     }
 
     fimp.close();
