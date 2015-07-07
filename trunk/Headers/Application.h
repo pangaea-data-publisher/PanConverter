@@ -127,6 +127,30 @@ public:
 
     int findExpeditionID( const QString &Expedition, const QStringList &crInput );
 
+    QString OpenDataDescriptionHeader();
+    QString CloseDataDescriptionHeader();
+    QString ParentID( const QString& ParentID = "-999" );
+    QString DataSetID( const QString& DatasetID = "-999" );
+    QString AuthorIDs( const QString& AuthorIDs = "-999" );
+    QString SourceID( const QString& SourceID = "-999" );
+    QString DatasetTitle( const QString& Text );
+    QString Reference( const QString &ReferenceID = "-999", const QString& RelationTypeID = "-999", const QString &ReferenceType = "-999", const QString& EventLabel = "" );
+    QString ReferenceOtherVersion( const QString& EventLabel, const QDateTime dt );
+    QString ExportFilename( const QString& EventLabel, const QString& Text );
+    QString EventLabel( const QString& EventLabel = "" );
+    QString Parameter( const QString& ParameterID = "-999", const QString& PIID = "506", const QString& MethodID = "43", const QString& Format = "", const QString& Comment = "" );
+    QString Parameter( const QStringList Parameter );
+    QString DatasetComment( const QString& DatasetComment = "" );
+    QString ProjectIDs( const QString& ProjectID = "-999" );
+    QString TopologicTypeID( const QString& TopologicTypeID = "-999" );
+    QString StatusID( const QString& StatusID = "-999" );
+    QString UserIDs( const QString& UserIDs = "-999" );
+    QString LoginID( const QString& LoginID = "-999" );
+
+    QString num2str( const int num ) { return( QString::number( num ) ); }
+    QString num2str( const float num ) { return( QString::number( num ) ); }
+    QString num2str( const double num ) { return( QString::number( num ) ); }
+
 protected:
     void dragEnterEvent( QDragEnterEvent *event );
     void dropEvent( QDropEvent *event );

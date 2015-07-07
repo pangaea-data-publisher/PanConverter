@@ -3,10 +3,23 @@
     #define _GLOBALS
 
 // Application constants
+
+    #if defined(Q_OS_LINUX)
+       const char eol = '\n';
+    #endif
+
+    #if defined(Q_OS_WIN)
+       const char eol = '\n';
+    #endif
+
+    #if defined(Q_OS_MAC)
+       const char eol = '\r';
+    #endif
+
     const QString _PROGRAMDOI_                       = "doi:10.1594/PANGAEA.823690";
     const QString _PROGRAMREADME_                    = "http://wiki.pangaea.de/wiki/PanConverter";
 
-    const QString _VERSION_                          = "1.6";	// Version number, 2015-02-19
+    const QString _VERSION_                          = "1.7";	// Version number, 2015-07-07
     const QChar   _PSEPARATOR_                       = '|';
 
     const int   _NOERROR_                            = 0;
@@ -57,5 +70,15 @@
 // Extension
     const int   _TXT_                                = 0;
     const int   _CSV_                                = 1;
+
+// Relation Types
+    const int   _REPLACEDBY_             = 10;       // Replaced by
+    const int   _SUPPLEMENTTO_           = 11;       // Supplement to
+    const int   _RELATEDTO_              = 12;       // Related to = IsCitedBy
+    const int   _OTHERVERSION_           = 13;       // Other version
+    const int   _NEWVERSION_             = 14;       // New version
+    const int   _ORIGINALVERSION_        = 15;       // Original version
+    const int   _SOURCEDATASET_          = 16;       // Source data set
+    const int   _FURTHERDETAILS_         = 17;       // Further details
 
 #endif

@@ -240,7 +240,6 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const QStringList &sl_crInput, const int i_NumOfFiles )
 {
     int         i                            = 1;
-    int         j                            = 0;
     int         n                            = 0;
 
     int			stopProgress                 = 0;
@@ -250,6 +249,10 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     double      d_Bearing                    = 0.;
     double      d_Distance                   = 0.;
     double      d_Time                       = 0.;
+
+//  QString     q                            = "\"";
+    QString     qs                           = "  \"";
+    QString     qe                           = "\": ";
 
     QString     s_OutputStr                  = "";
 
@@ -261,8 +264,8 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     QString     s_LocationEnd                = "";
     QString     s_DateBegin                  = "";
     QString     s_DateEnd                    = "";
+    QString     s_EventLabel                 = "";
     QString     s_Expedition                 = "";
-    QString     s_ExpeditionOptional         = "";
     QString     s_Basis                      = "";
     QString     s_Author                     = "";
     QString     s_CruiseReport               = "";
@@ -270,6 +273,12 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     QString     s_Mastertrack_generalized    = "";
     QString     s_Mastertrack_fullresolution = "";
     QString     s_TracklineMap               = "";
+    QString     s_DatasetTitle               = "";
+    QString     s_DatasetComment             = "";
+    QString     s_DatasetID                  = "";
+
+    QStringList sl_Parameter;
+    QStringList sl_Reference;
 
     QString     s_EOL                        = setEOLChar( i_EOL );
 
@@ -307,8 +316,17 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         {
             if ( ( s_Expedition.startsWith( "PS" ) == true ) || ( s_Expedition.startsWith( "HE" ) == true ) )
             {
-                s_Expedition                 = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 );
-                s_ExpeditionOptional         = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 );
+                if ( sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ).startsWith( "PS" ) == true )
+                {
+                    s_EventLabel  = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ) + "/" + sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ).section( "/", 1, 1 ); // PS*-track od HE
+                    s_Expedition  = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ); // ANT-* or ARK-*
+                }
+                else
+                {
+                    s_EventLabel  = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 );
+                    s_Expedition = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 );
+                }
+
                 s_LocationStart              = sl_crInput.at( i_ExpeditionID ).section( "\t", 4, 4 );
                 s_LocationEnd                = sl_crInput.at( i_ExpeditionID ).section( "\t", 6, 6 );
                 s_DateBegin                  = sl_crInput.at( i_ExpeditionID ).section( "\t", 3, 3 );
@@ -325,7 +343,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
 // **********************************************************************************************
 
-    s_FilenameExpedition = s_Expedition;
+    s_FilenameExpedition = s_EventLabel;
     s_FilenameExpedition.replace( "/", "_" );
 
     s_FilenameImport = fi.absolutePath() + "/" + s_FilenameExpedition + "_mastertrack_imp.txt";
@@ -356,68 +374,87 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     {
         initProgress( i_NumOfFiles, s_FilenameIn, tr( "Creating import file..." ), sl_Input.count() );
 
-        timp << "/* DATA DESCRIPTION:" << s_EOL;
-
-        if ( s_Author.isEmpty() == false )
-            timp << "Author:\t" << s_Author << s_EOL;
-        else
-            timp << "Author:\t" << "22483" << s_EOL; // Anonymous
-
-        timp << "Source:\t32" << s_EOL;
+        if ( s_Author.isEmpty() == true )
+            s_Author = tr( "22483" ); // Anonymous
 
         if ( s_StationList.isEmpty() == false )
         {
              if ( s_Basis == "ps" )
-                timp << "Title:\tStation list and links to master tracks in different resolutions of POLARSTERN cruise " << s_Expedition;
+                s_DatasetTitle = tr( "Station list and links to master tracks in different resolutions of POLARSTERN cruise " );
 
             if ( s_Basis == "he" )
-                timp << "Title:\tStation list and links to master tracks in different resolutions of HEINCKE cruise " << s_Expedition;
+                s_DatasetTitle = tr( "Station list and links to master tracks in different resolutions of HEINCKE cruise " );
         }
         else
         {
             if ( s_Basis == "ps" )
-               timp << "Title:\tLinks to master tracks in different resolutions of POLARSTERN cruise " << s_Expedition;
+               s_DatasetTitle = tr( "Links to master tracks in different resolutions of POLARSTERN cruise " );
 
            if ( s_Basis == "he" )
-               timp << "Title:\tLinks to master tracks in different resolutions of HEINCKE cruise " << s_Expedition;
+               s_DatasetTitle = tr( "Links to master tracks in different resolutions of HEINCKE cruise " );
         }
 
-        if ( ( s_LocationStart.isEmpty() == false ) && ( s_LocationEnd.isEmpty() == false )  && ( s_DateBegin.isEmpty() == false )  && ( s_DateEnd.isEmpty() == false ) )
-            timp << ", " << s_LocationStart << " - " << s_LocationEnd << ", " << s_DateBegin << " - "  << s_DateEnd;
+        if ( sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ).startsWith( "PS" ) == true )
+            s_DatasetTitle.append( s_Expedition );
+        else
+            s_DatasetTitle.append( s_EventLabel ).append( " (" ).append( s_Expedition ).append( ")" );
 
-        timp << s_EOL;
+        if ( ( s_LocationStart.isEmpty() == false ) && ( s_LocationEnd.isEmpty() == false )  && ( s_DateBegin.isEmpty() == false )  && ( s_DateEnd.isEmpty() == false ) )
+            s_DatasetTitle.append( ", " + s_LocationStart + " - " + s_LocationEnd + ", " + s_DateBegin + " - "  + s_DateEnd );
 
         if ( s_CruiseReport.isEmpty() == false )
-            timp << "Reference:\t" << s_CruiseReport << " * RELATIONTYPE: 12" << s_EOL;  // Cruise report (Related to)
+            sl_Reference.append( Reference( s_CruiseReport, num2str( _RELATEDTO_ ) ) );                        // Cruise report (Related to)
 
         if ( s_Mastertrack_fullresolution.isEmpty() == false )
-            timp << "Reference:\t" << s_Mastertrack_fullresolution << " * RELATIONTYPE: 13" << s_EOL;  // Link to master track in full resolution (Other version)
+            sl_Reference.append( Reference( s_Mastertrack_fullresolution, num2str( _OTHERVERSION_ ) ) );       // Link to master track in full resolution (Other version)
 
         if ( s_Mastertrack_generalized.isEmpty() == false )
-            timp << "Reference:\t" << s_Mastertrack_generalized << " * RELATIONTYPE: 17" << s_EOL;  // Link to master track generalized (Further details)
+            sl_Reference.append( Reference( s_CruiseReport, num2str( _FURTHERDETAILS_ ) ) );                   // Link to master track generalized (Further details)
 
         if ( s_StationList.isEmpty() == false )
-            timp << "Reference:\t" << s_StationList << " * RELATIONTYPE: 17" << s_EOL;  // Station list (Further details)
+            sl_Reference.append( Reference( s_StationList, num2str( _FURTHERDETAILS_ ) ) );                    // Link to Station list (Further details)
 
         if ( s_TracklineMap.isEmpty() == false )
-            timp << "Reference:\t" << s_TracklineMap << " * RELATIONTYPE: 17" << s_EOL;  // Trackline map (Further details)
+            sl_Reference.append( Reference( s_TracklineMap, num2str( _FURTHERDETAILS_ ) ) );                   // Link to Trackline map (Further details)
 
-        timp << "Export Filename:\t" << s_FilenameExpedition << "_link-to-mastertrack" << s_EOL;
-        timp << "Event:\t" << s_Expedition << "-track" << s_EOL;
-        timp << "PI:\t506" << s_EOL;
-        timp << "Parameter:	1599 * PI: 506 * METHOD: 43 * FORMAT: yyyy-MM-dd'T'HH:mm" << s_EOL;
-        timp << "\t1600 * PI: 506 * METHOD: 43 * FORMAT: ##0.00000" << s_EOL;
-        timp << "\t1601 * PI: 506 * METHOD: 43 * FORMAT: ##0.00000" << s_EOL;
-        timp << "\t2960 * PI: 506 * METHOD: 50 * FORMAT: ##0.000 * COMMENT: 10 min resolution" << s_EOL;
-        timp << "\t21892 * PI: 506 * METHOD: 50 * FORMAT: ##0.0 * COMMENT: 10 min resolution" << s_EOL;
-        timp << "Project:\t15" << s_EOL;
-        timp << "Topologic Type:\t6" << s_EOL;
-        timp << "Status:\t4" << s_EOL;
-        timp << "Login:\t1" << s_EOL;
-        timp << "*/" << s_EOL;
-        timp << "Event label\t1599\t1600\t1601\t2960\t21892" << s_EOL;
+        sl_Parameter.append( Parameter( num2str( 1599 ),  num2str( 506 ), num2str( 43 ), tr( "yyyy-MM-dd'T'HH:mm" ) ) );
+        sl_Parameter.append( Parameter( num2str( 1600 ),  num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
+        sl_Parameter.append( Parameter( num2str( 1601 ),  num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
+        sl_Parameter.append( Parameter( num2str( 2960 ),  num2str( 506 ), num2str( 50 ), tr( "###0.000" ), tr( "10 min resolution" ) ) );
+        sl_Parameter.append( Parameter( num2str( 21892 ), num2str( 506 ), num2str( 50 ), tr( "###0.0" ), tr( "10 min resolution" ) ) );
+
+        if ( sl_Parameter.count() > 1 )
+        {
+            timp << OpenDataDescriptionHeader();
+            timp << s_DatasetID;
+            timp << AuthorIDs( s_Author );
+            timp << SourceID( num2str( 32 ) );
+            timp << DatasetTitle( s_DatasetTitle );
+
+            if ( sl_Reference.count() > 0 )
+            {
+                timp << qs << tr( "ReferenceIDs" ) << qe << "[ " << s_EOL;
+
+                for ( int i=0; i<sl_Reference.count()-1; i++ )
+                    timp << sl_Reference.at( i ) << "," << s_EOL;
+
+                timp << sl_Reference.at( sl_Reference.count()-1 ) << " ]," << s_EOL;
+            }
+
+            timp << ExportFilename( s_EventLabel, tr( "link-to-mastertrack" ) );
+            timp << EventLabel( s_EventLabel + tr( "-track" ) );
+            timp << Parameter( sl_Parameter );
+            timp << DatasetComment( s_DatasetComment );
+            timp << ProjectIDs( num2str( 15 ) );
+            timp << TopologicTypeID( num2str( 6 ) );
+            timp << StatusID( num2str( 4 ) );
+            timp << LoginID( num2str( 1 ) );
+            timp << CloseDataDescriptionHeader();
+        }
 
 // **********************************************************************************************
+
+        timp << "1599\t1600\t1601\t2960\t21892" << s_EOL;
 
         i = 1;
 
@@ -453,11 +490,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
                     d_Distance = (double) Pos1.distanceTo( Pos2 ); // distance in meter
                     d_Bearing  = (double) Pos1.azimuthTo( Pos2 );  // Heading in deg
 
-                    if ( ++j < 2 )
-                        s_OutputStr = s_Expedition + tr( "-track" ) + "\t";
-                    else
-                        s_OutputStr = "\t";
-
+                    s_OutputStr.clear();
                     s_OutputStr.append( DateTime2.toString( Qt::ISODate ) + "\t" + sl_Input.at( i ).section( "\t", 1, 1 ) + "\t" + sl_Input.at( i ).section( "\t", 2, 2 ) + "\t" );
                     s_OutputStr.append( QString( "%1\t%2").arg( d_Distance/d_Time * 3.6 / 1.853 ).arg( d_Bearing ) );
 

@@ -74,6 +74,7 @@ SOURCES = ./Sources/ApplicationInit.cpp \
     ./Sources/convertWOCE-WHP.cpp \
     ./Sources/createGpxFile.cpp \
     ./Sources/createKmlFile.cpp \
+    ./Sources/JSONImportHeader.cpp \
     ./Sources/startProgram.cpp \
     ./Sources/Webfile.cpp \
     ./Forms/AboutDialog/AboutDialog.cpp \
