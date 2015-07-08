@@ -237,7 +237,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 // **********************************************************************************************
 // 2015-01-10
 
-int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const QStringList &sl_crInput, const int i_NumOfFiles )
+int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const int i_CodecInput, const int i_CodecOutput, const QStringList &sl_crInput, const int i_NumOfFiles )
 {
     int         i                            = 1;
     int         n                            = 0;
@@ -403,17 +403,17 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         if ( s_CruiseReport.isEmpty() == false )
             sl_Reference.append( Reference( s_CruiseReport, num2str( _RELATEDTO_ ) ) );                        // Cruise report (Related to)
 
-        if ( s_Mastertrack_fullresolution.isEmpty() == false )
-            sl_Reference.append( Reference( s_Mastertrack_fullresolution, num2str( _OTHERVERSION_ ) ) );       // Link to master track in full resolution (Other version)
-
-        if ( s_Mastertrack_generalized.isEmpty() == false )
-            sl_Reference.append( Reference( s_Mastertrack_generalized, num2str( _FURTHERDETAILS_ ) ) );        // Link to master track generalized (Further details)
-
         if ( s_StationList.isEmpty() == false )
             sl_Reference.append( Reference( s_StationList, num2str( _FURTHERDETAILS_ ) ) );                    // Link to Station list (Further details)
 
         if ( s_TracklineMap.isEmpty() == false )
             sl_Reference.append( Reference( s_TracklineMap, num2str( _FURTHERDETAILS_ ) ) );                   // Link to Trackline map (Further details)
+
+        if ( s_Mastertrack_fullresolution.isEmpty() == false )
+            sl_Reference.append( Reference( s_Mastertrack_fullresolution, num2str( _OTHERVERSION_ ) ) );       // Link to master track in full resolution (Other version)
+
+        if ( s_Mastertrack_generalized.isEmpty() == false )
+            sl_Reference.append( Reference( s_Mastertrack_generalized, num2str( _FURTHERDETAILS_ ) ) );        // Link to master track generalized (Further details)
 
         sl_Parameter.append( Parameter( num2str( 1599 ),  num2str( 506 ), num2str( 43 ), tr( "yyyy-MM-dd'T'HH:mm" ) ) );
         sl_Parameter.append( Parameter( num2str( 1600 ),  num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
@@ -747,7 +747,7 @@ void MainWindow::doCreateMastertrackImportFile()
                     err = _FILENOTEXISTS_;
 
                 if ( err == _NOERROR_ )
-                    err = createMastertrackImportFile( s_FilenameIn, gi_CodecInput, gi_CodecOutput, gi_EOL, sl_crInput, gsl_FilenameList.count() );
+                    err = createMastertrackImportFile( s_FilenameIn, gi_CodecInput, gi_CodecOutput, sl_crInput, gsl_FilenameList.count() );
 
                 stopProgress = incFileProgress( gsl_FilenameList.count(), ++i );
             }
