@@ -233,12 +233,13 @@ QString MainWindow::Parameter( const QStringList sl_Parameter )
 {
     int     NumOfParameters = sl_Parameter.count() - 1;
 
-    QString s_OutputStr     = "  ";
+    QString s_OutputStr     = "";
 
 // **********************************************************************************************
 
     if ( NumOfParameters + 1 > 1 )
     {
+        s_OutputStr = "  ";
         s_OutputStr.append( "\"ParameterIDs\": [ " );
         s_OutputStr.append( eol );
         s_OutputStr.append( sl_Parameter.first() );
@@ -312,12 +313,16 @@ QString MainWindow::ProjectIDs( const QString& s_ProjectIDs )
 
 QString MainWindow::TopologicTypeID( const QString& s_TopologicTypeID )
 {
-    QString s_OutputStr = "  ";
+    QString s_OutputStr = "";
 
-    s_OutputStr.append( "\"TopologicTypeID\": " );
-    s_OutputStr.append( s_TopologicTypeID );
-    s_OutputStr.append( "," );
-    s_OutputStr.append( eol );
+    if ( s_TopologicTypeID.isEmpty() == false )
+    {
+        s_OutputStr = "  ";
+        s_OutputStr.append( "\"TopologicTypeID\": " );
+        s_OutputStr.append( s_TopologicTypeID );
+        s_OutputStr.append( "," );
+        s_OutputStr.append( eol );
+    }
 
     return( s_OutputStr );
 }
@@ -328,12 +333,16 @@ QString MainWindow::TopologicTypeID( const QString& s_TopologicTypeID )
 
 QString MainWindow::StatusID( const QString& s_StatusID )
 {
-    QString s_OutputStr = "  ";
+    QString s_OutputStr = "";
 
-    s_OutputStr.append( "\"StatusID\": " );
-    s_OutputStr.append( s_StatusID );
-    s_OutputStr.append( "," );
-    s_OutputStr.append( eol );
+    if ( s_StatusID.isEmpty() == false )
+    {
+        s_OutputStr = "  ";
+        s_OutputStr.append( "\"StatusID\": " );
+        s_OutputStr.append( s_StatusID );
+        s_OutputStr.append( "," );
+        s_OutputStr.append( eol );
+    }
 
     return( s_OutputStr );
 }
@@ -368,22 +377,6 @@ QString MainWindow::LoginID( const QString& s_LoginID )
 
     s_OutputStr.append( "\"LoginID\": " );
     s_OutputStr.append( s_LoginID ); // no comma at the end!
-    s_OutputStr.append( eol );
-
-    return( s_OutputStr );
-}
-
-// **********************************************************************************************
-// **********************************************************************************************
-// **********************************************************************************************
-
-QString MainWindow::ReferenceOtherVersion( const QString& s_EventLabel, const QDateTime dt )
-{
-    QString s_OutputStr = "  ";
-
-    s_OutputStr.append( "\"ReferenceIDs\": [" );
-    s_OutputStr.append( eol );
-    s_OutputStr.append( "    { \"ID\": ftp://ftp.bsrn.awi.de/" + s_EventLabel.toLower() + "/" + s_EventLabel.toLower() + dt.toString( "MMyy" ) + ".dat.gz, \"RelationTypeID\": 13 } ]," );
     s_OutputStr.append( eol );
 
     return( s_OutputStr );

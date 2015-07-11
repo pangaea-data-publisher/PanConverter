@@ -135,7 +135,6 @@ public:
     QString SourceID( const QString& SourceID = "-999" );
     QString DatasetTitle( const QString& Text );
     QString Reference( const QString &ReferenceID = "-999", const QString& RelationTypeID = "-999", const QString &ReferenceType = "-999", const QString& EventLabel = "" );
-    QString ReferenceOtherVersion( const QString& EventLabel, const QDateTime dt );
     QString ExportFilename( const QString& EventLabel, const QString& Text );
     QString EventLabel( const QString& EventLabel = "" );
     QString Parameter( const QString& ParameterID = "-999", const QString& PIID = "506", const QString& MethodID = "43", const QString& Format = "", const QString& Comment = "" );
