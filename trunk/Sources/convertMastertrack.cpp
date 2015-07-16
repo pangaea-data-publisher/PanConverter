@@ -401,19 +401,19 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
             s_DatasetTitle.append( ", " + s_LocationStart + " - " + s_LocationEnd + ", " + s_DateBegin + " - "  + s_DateEnd );
 
         if ( s_CruiseReport.isEmpty() == false )
-            sl_Reference.append( Reference( s_CruiseReport, num2str( _RELATEDTO_ ) ) );                        // Cruise report (Related to)
+            sl_Reference.append( Reference( s_CruiseReport, _RELATEDTO_ ) );                        // Cruise report (Related to)
 
         if ( s_StationList.isEmpty() == false )
-            sl_Reference.append( Reference( s_StationList, num2str( _FURTHERDETAILS_ ) ) );                    // Link to Station list (Further details)
+            sl_Reference.append( Reference( s_StationList, _FURTHERDETAILS_ ) );                    // Link to Station list (Further details)
 
         if ( s_TracklineMap.isEmpty() == false )
-            sl_Reference.append( Reference( s_TracklineMap, num2str( _FURTHERDETAILS_ ) ) );                   // Link to Trackline map (Further details)
+            sl_Reference.append( Reference( s_TracklineMap, _FURTHERDETAILS_ ) );                   // Link to Trackline map (Further details)
 
         if ( s_Mastertrack_fullresolution.isEmpty() == false )
-            sl_Reference.append( Reference( s_Mastertrack_fullresolution, num2str( _OTHERVERSION_ ) ) );       // Link to master track in full resolution (Other version)
+            sl_Reference.append( Reference( s_Mastertrack_fullresolution, _OTHERVERSION_ ) );       // Link to master track in full resolution (Other version)
 
         if ( s_Mastertrack_generalized.isEmpty() == false )
-            sl_Reference.append( Reference( s_Mastertrack_generalized, num2str( _FURTHERDETAILS_ ) ) );        // Link to master track generalized (Further details)
+            sl_Reference.append( Reference( s_Mastertrack_generalized, _FURTHERDETAILS_ ) );        // Link to master track generalized (Further details)
 
         sl_Parameter.append( Parameter( num2str( 1599 ),  num2str( 506 ), num2str( 43 ), tr( "yyyy-MM-dd'T'HH:mm" ) ) );
         sl_Parameter.append( Parameter( num2str( 1600 ),  num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
