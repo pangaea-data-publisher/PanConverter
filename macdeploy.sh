@@ -7,7 +7,7 @@ echo - macdeployqt
 cd ~/Development/GitHub/PanConverter
 
 rm -R '../../Distribution/PanConverter/PanConverter.app'
-cp -R './build-PanConverter-Desktop_Qt_5_5_0_clang_64bit-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'
+cp -R './build-PanConverter-Desktop_Qt_5_5_1_clang_64bit-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'
 cp './trunk/Resources/Info.plist' '../../Distribution/PanConverter/PanConverter.app/Contents/Info.plist'
 
 /Developer/Qt/5.5/clang_64/bin/macdeployqt '../../Distribution/PanConverter/PanConverter.app'
