@@ -50,7 +50,7 @@ QString MainWindow::ParentID( const QString& s_ParentID )
     {
         s_OutputStr = "  ";
         s_OutputStr.append( "\"ParentID\": " );
-        s_OutputStr.append( s_ParentID);
+        s_OutputStr.append( s_ParentID );
         s_OutputStr.append( "," );
         s_OutputStr.append( eol );
     }
@@ -93,6 +93,8 @@ QString MainWindow::AuthorIDs( const QString& s_AuthorIDs )
         s_OutputStr.append( "[ "+ s_AuthorIDs + " ]" );
         s_OutputStr.append( "," );
         s_OutputStr.append( eol );
+
+        s_OutputStr.replace( ";", "," );
     }
 
     return( s_OutputStr );
@@ -307,6 +309,8 @@ QString MainWindow::ProjectIDs( const QString& s_ProjectIDs )
         s_OutputStr.append( "[ "+ s_ProjectIDs + " ]" );
         s_OutputStr.append( "," );
         s_OutputStr.append( eol );
+
+        s_OutputStr.replace( ";", "," );
     }
 
     return( s_OutputStr );
@@ -367,6 +371,8 @@ QString MainWindow::UserIDs( const QString& s_UserIDs )
         s_OutputStr.append( "[ "+ s_UserIDs + " ]" );
         s_OutputStr.append( "," );
         s_OutputStr.append( eol );
+
+        s_OutputStr.replace( ";", "," );
     }
 
     return( s_OutputStr );
