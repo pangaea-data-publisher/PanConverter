@@ -316,7 +316,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
             {
                 if ( sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ).startsWith( "PS" ) == true )
                 {
-                    s_EventLabel  = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ) + "/" + sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ).section( "/", 1, 1 ); // PS*-track od HE
+                    s_EventLabel  = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ) + "/" + sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ).section( "/", 1, 1 ); // PS*-track or HE
                     s_Expedition  = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ); // ANT-* or ARK-*
                 }
                 else
@@ -418,8 +418,8 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         sl_Parameter.append( Parameter( num2str( 1599 ),  num2str( 506 ), num2str( 43 ), tr( "yyyy-MM-dd'T'HH:mm" ) ) );
         sl_Parameter.append( Parameter( num2str( 1600 ),  num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
         sl_Parameter.append( Parameter( num2str( 1601 ),  num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
-        sl_Parameter.append( Parameter( num2str( 2960 ),  num2str( 506 ), num2str( 50 ), tr( "###0.000" ), tr( "10 min resolution" ) ) );
-        sl_Parameter.append( Parameter( num2str( 21892 ), num2str( 506 ), num2str( 50 ), tr( "###0.0" ), tr( "10 min resolution" ) ) );
+        sl_Parameter.append( Parameter( num2str( 2960 ),  num2str( 506 ), num2str( 50 ), tr( "###0.000" ), tr( "10-min average" ) ) );
+        sl_Parameter.append( Parameter( num2str( 21892 ), num2str( 506 ), num2str( 50 ), tr( "###0.0" ), tr( "10-min average" ) ) );
 
         if ( sl_Parameter.count() > 1 )
         {
@@ -452,7 +452,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
 // **********************************************************************************************
 
-        timp << "1599\t1600\t1601\t2960\t21892" << eol;
+        timp << "1599\t1600\t1601\t2960\t2961" << eol;
 
         i = 1;
 
@@ -486,7 +486,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
                     Pos2.setLongitude( sl_Input.at( i ).section( "\t", 2, 2 ).toDouble() );
 
                     d_Distance = (double) Pos1.distanceTo( Pos2 ); // distance in meter
-                    d_Bearing  = (double) Pos1.azimuthTo( Pos2 );  // Heading in deg
+                    d_Bearing  = (double) Pos1.azimuthTo( Pos2 );  // course in deg
 
                     s_OutputStr.clear();
                     s_OutputStr.append( DateTime2.toString( Qt::ISODate ) + "\t" + sl_Input.at( i ).section( "\t", 1, 1 ) + "\t" + sl_Input.at( i ).section( "\t", 2, 2 ) + "\t" );
