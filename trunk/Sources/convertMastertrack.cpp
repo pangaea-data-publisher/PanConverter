@@ -415,11 +415,11 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         if ( s_Mastertrack_generalized.isEmpty() == false )
             sl_Reference.append( Reference( s_Mastertrack_generalized, _FURTHERDETAILS_ ) );        // Link to master track generalized (Further details)
 
-        sl_Parameter.append( Parameter( num2str( 1599 ),  num2str( 506 ), num2str( 43 ), tr( "yyyy-MM-dd'T'HH:mm" ) ) );
-        sl_Parameter.append( Parameter( num2str( 1600 ),  num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
-        sl_Parameter.append( Parameter( num2str( 1601 ),  num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
-        sl_Parameter.append( Parameter( num2str( 2960 ),  num2str( 506 ), num2str( 50 ), tr( "###0.000" ), tr( "10-min average" ) ) );
-        sl_Parameter.append( Parameter( num2str( 21892 ), num2str( 506 ), num2str( 50 ), tr( "###0.0" ), tr( "10-min average" ) ) );
+        sl_Parameter.append( Parameter( num2str( 1599 ), num2str( 506 ), num2str( 43 ), tr( "yyyy-MM-dd'T'HH:mm" ) ) );
+        sl_Parameter.append( Parameter( num2str( 1600 ), num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
+        sl_Parameter.append( Parameter( num2str( 1601 ), num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
+        sl_Parameter.append( Parameter( num2str( 2960 ), num2str( 506 ), num2str( 50 ), tr( "###0.000" ), tr( "10-min average" ) ) );
+        sl_Parameter.append( Parameter( num2str( 2961 ), num2str( 506 ), num2str( 50 ), tr( "###0.0" ), tr( "10-min average" ) ) );
 
         if ( sl_Parameter.count() > 1 )
         {
