@@ -107,7 +107,8 @@ public:
     int convertCHUAN_moving( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertSOCAT( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertMastertrack( const QString &FilenameIn, const int CodecInput, const int CodecOutput, const int EOL, const QStringList &crInput, const int NumOfFiles );
-    int createMastertrackImportFile( const QString &FilenameIn, const int CodecInput, const int CodecOutput, const QStringList &crInput, const int NumOfFiles );
+    int createMastertrackImportFile(const QString &FilenameIn, const int CodecInput, const int CodecOutput, const QStringList &crInput, const int Resolution, const int NumOfFiles );
+    int createMastertrackImportFile( const int Resolution );
     int convertNOAA_IOAS( const int Type, const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertTSG( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int CliwocConverter( const QString &FilenameIn, const QString &FilenameOut, const QString &FilenameConf, const int NumOfFiles );
@@ -180,7 +181,9 @@ private slots:
     void doConvertCHUAN_station();
     void doConvertCHUAN_moving();
     void doConvertMastertrack();
-    void doCreateMastertrackImportFile();
+    void doCreateMastertrackImportFile_30sec();
+    void doCreateMastertrackImportFile_1min();
+    void doCreateMastertrackImportFile_10min();
 
     void doConvertNOAA_IOAS( const int Type );
     void doConvertNOAA_IOAS_Benthos();
@@ -277,7 +280,9 @@ private:
     QAction *convertCHUAN_stationAction;
     QAction *convertCHUAN_movingAction;
     QAction *convertMastertrackAction;
-    QAction *createMastertrackImportFileAction;
+    QAction *createMastertrackImportFile30secAction;
+    QAction *createMastertrackImportFile1minAction;
+    QAction *createMastertrackImportFile10minAction;
 
     QAction *convertNOAA_IOAS_BENTHOS_Action;
     QAction *convertNOAA_IOAS_HYDROLOGY_Action;

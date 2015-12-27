@@ -49,12 +49,25 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
     QFileInfo fi( s_FilenameIn );
 
     s_Expedition     = findExpedition( fi.completeBaseName(), sl_crInput );
-    s_FilenameOut    = s_Expedition;
-    s_FilenameOut    = fi.absolutePath() + "/" + s_FilenameOut.replace( "/", "_" ) + "_mastertrack";
-    s_FilenameRefImp = s_Expedition;
-    s_FilenameRefImp = fi.absolutePath() + "/" + s_FilenameRefImp.replace( "/", "_" ) + "_ref_imp.txt";
-    s_FilenameZip    = s_Expedition;
-    s_FilenameZip    = fi.absolutePath() + "/" + s_FilenameZip.replace( "/", "_" ) + "_mastertrack.zip";
+
+    if ( s_Expedition.startsWith( "unknown_" ) == true )
+    {
+        s_FilenameOut    = s_Expedition.section( "unknown_", 1, 1 );
+        s_FilenameOut    = fi.absolutePath() + "/" + s_FilenameOut.replace( "/", "_" ) + "_mastertrack";
+        s_FilenameRefImp = s_Expedition.section( "unknown_", 1, 1 );
+        s_FilenameRefImp = fi.absolutePath() + "/" + s_FilenameRefImp.replace( "/", "_" ) + "_ref_imp.txt";
+        s_FilenameZip    = s_Expedition.section( "unknown_", 1, 1 );
+        s_FilenameZip    = fi.absolutePath() + "/" + s_FilenameZip.replace( "/", "_" ) + "_mastertrack.zip";
+    }
+    else
+    {
+        s_FilenameOut    = s_Expedition;
+        s_FilenameOut    = fi.absolutePath() + "/" + s_FilenameOut.replace( "/", "_" ) + "_mastertrack";
+        s_FilenameRefImp = s_Expedition;
+        s_FilenameRefImp = fi.absolutePath() + "/" + s_FilenameRefImp.replace( "/", "_" ) + "_ref_imp.txt";
+        s_FilenameZip    = s_Expedition;
+        s_FilenameZip    = fi.absolutePath() + "/" + s_FilenameZip.replace( "/", "_" ) + "_mastertrack.zip";
+    }
 
     if ( s_FilenameIn.contains( "_generalized" ) == true )
         s_FilenameOut.append( "_generalized" );
@@ -200,7 +213,6 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
             tref << "Trackline map and processing report for navigation sensors from POLARSTERN cruise " << s_Expedition << "\t";
             tref << "hdl:10013/epic." << s_FilenameExpedition << s_EOL;
         }
-
     }
 
     if ( s_Expedition.startsWith( "HE" ) == true )
@@ -220,6 +232,23 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
         tref << "hdl:10013/epic." << s_Expedition << s_EOL;
     }
 
+    if ( s_Expedition.startsWith( "unknown" ) == true )
+    {
+        tref << "Master track of unknown cruise " << s_Expedition.section( "unknown_", 1, 1 ) << " in 1 sec resolution ";
+        tref << "(zipped, " << s_FileSize << ")" << "\t";
+        tref << "http://hs.pangaea.de/nav/mastertrack/unknown/" << s_Expedition.section( "unknown_", 1, 1 ) << "_mastertrack.zip" << s_EOL;
+
+        tref << "Generalized master track of unknown cruise " << s_Expedition.section( "unknown_", 1, 1 ) << "\t";
+        tref << "http://hs.pangaea.de/nav/mastertrack/unknown/" << s_Expedition.section( "unknown_", 1, 1 ) << "_mastertrack_generalized.zip" << s_EOL;
+
+        tref << "Station list of unknown cruise " << s_Expedition.section( "unknown_", 1, 1 ) << "\t";
+        tref << "http://www.pangaea.de/ddi/" << s_Expedition.section( "unknown_", 1, 1 ) << ".tab?retr=events/unknown/" << s_Expedition.section( "unknown_", 1, 1 );
+        tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
+
+        tref << "Trackline map and processing report for navigation sensors from unknown cruise " << s_Expedition.section( "unknown_", 1, 1 ) << "\t";
+        tref << "hdl:10013/epic." << s_Expedition.section( "unknown_", 1, 1 ) << s_EOL;
+    }
+
     fref.close();
 
 // **********************************************************************************************
@@ -237,7 +266,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 // **********************************************************************************************
 // 2015-01-10
 
-int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const int i_CodecInput, const int i_CodecOutput, const QStringList &sl_crInput, const int i_NumOfFiles )
+int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const int i_CodecInput, const int i_CodecOutput, const QStringList &sl_crInput, const int i_Resolution, const int i_NumOfFiles )
 {
     int         i                            = 1;
     int         n                            = 0;
@@ -249,8 +278,8 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     double      d_Bearing                    = 0.;
     double      d_Distance                   = 0.;
     double      d_Time                       = 0.;
+    double      d_TimeResolution             = 0.;
 
-//  QString     q                            = "\"";
     QString     qs                           = "  \"";
     QString     qe                           = "\": ";
 
@@ -276,6 +305,8 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     QString     s_DatasetTitle               = "";
     QString     s_DatasetComment             = "";
     QString     s_DatasetID                  = "";
+    QString     s_ParameterComment           = "";
+    QString     s_TimeFormat                 = "";
 
     QStringList sl_Parameter;
     QStringList sl_Reference;
@@ -289,6 +320,27 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     QGeoCoordinate  Pos2;
 
 // **********************************************************************************************
+
+    switch( i_Resolution )
+    {
+    case _R30SEC_:
+        s_ParameterComment = tr( "30-sec average");
+        d_TimeResolution   = 30.;
+        s_TimeFormat       = tr( "yyyy-MM-dd'T'HH:mm:ss" );
+        break;
+    case _R1MIN_:
+        s_ParameterComment = tr( "1-min average" );
+        d_TimeResolution   = 60.;
+        s_TimeFormat       = tr( "yyyy-MM-dd'T'HH:mm" );
+        break;
+    default:
+        s_ParameterComment = tr( "10-min average" );
+        d_TimeResolution   = 600.;
+        s_TimeFormat       = tr( "yyyy-MM-dd'T'HH:mm" );
+        break;
+    }
+
+// **********************************************************************************************
 // read file
 
     if ( ( n = readFile( s_FilenameIn, sl_Input, i_CodecInput ) ) < 1 )
@@ -300,43 +352,54 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
     s_Basis       = findBasis( fi.completeBaseName() );
     s_Expedition  = findExpedition( fi.completeBaseName(), sl_crInput );
-    s_FilenameOut = s_Expedition;
-    s_FilenameOut = fi.absolutePath() + "/" + s_FilenameOut.replace( "/", "_" ) + "_mastertrack";
 
-    if ( ( s_Basis == "ps" ) || ( s_Basis == "he" ) )
+    if ( s_Expedition.startsWith( "unknown_" ) == true )
     {
-        i_ExpeditionID = findExpeditionID( fi.completeBaseName(), sl_crInput );
+        s_FilenameOut = s_Expedition.section( "unknown_", 1, 1 );
+        s_FilenameOut = fi.absolutePath() + "/" + s_FilenameOut.replace( "/", "_" ) + "_mastertrack";
+    }
+    else
+    {
+        s_FilenameOut = s_Expedition;
+        s_FilenameOut = fi.absolutePath() + "/" + s_FilenameOut.replace( "/", "_" ) + "_mastertrack";
+    }
 
-        if ( i_ExpeditionID > 1000 )
-            i_ExpeditionID -= 1000;
+    i_ExpeditionID = findExpeditionID( fi.completeBaseName(), sl_crInput );
 
-        if ( i_ExpeditionID > 0 )
+    if ( i_ExpeditionID > 1000 )
+        i_ExpeditionID -= 1000;
+
+    if ( i_ExpeditionID > 0 )
+    {
+        if ( sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ).startsWith( "PS" ) == true )
         {
-            if ( ( s_Expedition.startsWith( "PS" ) == true ) || ( s_Expedition.startsWith( "HE" ) == true ) )
-            {
-                if ( sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ).startsWith( "PS" ) == true )
-                {
-                    s_EventLabel  = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ) + "/" + sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ).section( "/", 1, 1 ); // PS*-track or HE
-                    s_Expedition  = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ); // ANT-* or ARK-*
-                }
-                else
-                {
-                    s_EventLabel  = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 );
-                    s_Expedition = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 );
-                }
-
-                s_LocationStart              = sl_crInput.at( i_ExpeditionID ).section( "\t", 4, 4 );
-                s_LocationEnd                = sl_crInput.at( i_ExpeditionID ).section( "\t", 6, 6 );
-                s_DateBegin                  = sl_crInput.at( i_ExpeditionID ).section( "\t", 3, 3 );
-                s_DateEnd                    = sl_crInput.at( i_ExpeditionID ).section( "\t", 5, 5 );
-                s_Author                     = sl_crInput.at( i_ExpeditionID ).section( "\t", 25, 25 );
-                s_CruiseReport               = sl_crInput.at( i_ExpeditionID ).section( "\t", 26, 26 );
-                s_StationList                = sl_crInput.at( i_ExpeditionID ).section( "\t", 27, 27 );
-                s_Mastertrack_generalized    = sl_crInput.at( i_ExpeditionID ).section( "\t", 28, 28 );
-                s_Mastertrack_fullresolution = sl_crInput.at( i_ExpeditionID ).section( "\t", 29, 29 );
-                s_TracklineMap               = sl_crInput.at( i_ExpeditionID ).section( "\t", 30, 30 );
-            }
+            s_EventLabel = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ) + "/" + sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ).section( "/", 1, 1 ); // PS*-track or HE
+            s_Expedition = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ); // ANT-* or ARK-*
         }
+        else
+        {
+            s_EventLabel = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 );
+            s_Expedition = sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 );
+        }
+
+        s_LocationStart              = sl_crInput.at( i_ExpeditionID ).section( "\t", 4, 4 );
+        s_LocationEnd                = sl_crInput.at( i_ExpeditionID ).section( "\t", 6, 6 );
+        s_DateBegin                  = sl_crInput.at( i_ExpeditionID ).section( "\t", 3, 3 );
+        s_DateEnd                    = sl_crInput.at( i_ExpeditionID ).section( "\t", 5, 5 );
+        s_Author                     = sl_crInput.at( i_ExpeditionID ).section( "\t", 25, 25 );
+        s_CruiseReport               = sl_crInput.at( i_ExpeditionID ).section( "\t", 26, 26 );
+        s_StationList                = sl_crInput.at( i_ExpeditionID ).section( "\t", 27, 27 );
+        s_Mastertrack_generalized    = sl_crInput.at( i_ExpeditionID ).section( "\t", 28, 28 );
+        s_Mastertrack_fullresolution = sl_crInput.at( i_ExpeditionID ).section( "\t", 29, 29 );
+        s_TracklineMap               = sl_crInput.at( i_ExpeditionID ).section( "\t", 30, 30 );
+    }
+    else
+    {
+        s_EventLabel                 = s_Expedition.section( "unknown_", 1, 1 );
+
+        s_Author                     = "@A@" + s_EventLabel + "@";
+        s_Mastertrack_fullresolution = "@OR@" + s_EventLabel + "@";
+        s_Mastertrack_generalized    = "@FR@" + s_EventLabel + "@";
     }
 
 // **********************************************************************************************
@@ -394,8 +457,10 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
         if ( sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ).startsWith( "PS" ) == true )
             s_DatasetTitle.append( s_Expedition );
-        else
+        else if ( s_DatasetTitle.isEmpty() == false )
             s_DatasetTitle.append( s_EventLabel ).append( " (" ).append( s_Expedition ).append( ")" );
+        else
+            s_DatasetTitle = "@D@" + s_EventLabel + "@";
 
         if ( ( s_LocationStart.isEmpty() == false ) && ( s_LocationEnd.isEmpty() == false )  && ( s_DateBegin.isEmpty() == false )  && ( s_DateEnd.isEmpty() == false ) )
             s_DatasetTitle.append( ", " + s_LocationStart + " - " + s_LocationEnd + ", " + s_DateBegin + " - "  + s_DateEnd );
@@ -415,16 +480,17 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         if ( s_Mastertrack_generalized.isEmpty() == false )
             sl_Reference.append( Reference( s_Mastertrack_generalized, _FURTHERDETAILS_ ) );        // Link to master track generalized (Further details)
 
-        sl_Parameter.append( Parameter( num2str( 1599 ), num2str( 506 ), num2str( 43 ), tr( "yyyy-MM-dd'T'HH:mm" ) ) );
+        sl_Parameter.append( Parameter( num2str( 1599 ), num2str( 506 ), num2str( 43 ), s_TimeFormat ) );
         sl_Parameter.append( Parameter( num2str( 1600 ), num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
         sl_Parameter.append( Parameter( num2str( 1601 ), num2str( 506 ), num2str( 43 ), tr( "###0.00000" ) ) );
-        sl_Parameter.append( Parameter( num2str( 2960 ), num2str( 506 ), num2str( 50 ), tr( "###0.000" ), tr( "10-min average" ) ) );
-        sl_Parameter.append( Parameter( num2str( 2961 ), num2str( 506 ), num2str( 50 ), tr( "###0.0" ), tr( "10-min average" ) ) );
+        sl_Parameter.append( Parameter( num2str( 2960 ), num2str( 506 ), num2str( 50 ), tr( "###0.000" ), s_ParameterComment ) );
+        sl_Parameter.append( Parameter( num2str( 2961 ), num2str( 506 ), num2str( 50 ), tr( "###0.0" ), s_ParameterComment ) );
 
         if ( sl_Parameter.count() > 1 )
         {
             timp << OpenDataDescriptionHeader();
-            timp << s_DatasetID;
+//          timp << DataSetID( s_DatasetID );
+            timp << DataSetID( "@I@" + s_EventLabel + "@" );
             timp << AuthorIDs( s_Author );
             timp << SourceID( num2str( 32 ) );
             timp << DatasetTitle( s_DatasetTitle );
@@ -440,7 +506,12 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
             }
 
             timp << ExportFilename( s_EventLabel, tr( "link-to-mastertrack" ) );
-            timp << EventLabel( s_EventLabel + tr( "-track" ) );
+
+            if (s_Expedition.startsWith( "unknown_" ) == true )
+                timp << EventLabel( s_EventLabel );
+            else
+                timp << EventLabel( s_EventLabel + tr( "-track" ) );
+
             timp << Parameter( sl_Parameter );
             timp << DatasetComment( s_DatasetComment );
             timp << ProjectIDs( num2str( 15 ) );
@@ -473,7 +544,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
                 d_Time = (double) DateTime1.secsTo( DateTime2 );
 
-                if ( d_Time >= 10*60 ) // 10 min
+                if ( ( d_Time >= d_TimeResolution ) || ( i == n-1 ) ) // 10 min or last line
                 {
                     DateTime1.setDate( QDate::fromString( sl_Input.at( i-1 ).section( "\t", 0, 0 ).section( "T", 0, 0 ), "yyyy-MM-dd" ) );
                     DateTime1.setTime( QTime::fromString( sl_Input.at( i-1 ).section( "\t", 0, 0 ).section( "T", 1, 1 ), "hh:mm:ss" ) );
@@ -600,7 +671,7 @@ QString MainWindow::findExpedition( const QString &s_Filename, const QStringList
         return( s_Expedition );
     }
 
-    return( "unknown" );
+    return( "unknown_" + s_Filename.section( "_nav", 0, 0 ) );
 }
 
 // **********************************************************************************************
@@ -612,11 +683,13 @@ int MainWindow::findExpeditionID( const QString &s_Expedition, const QStringList
 {
     int     j             = 1;
 
-    QString sd_Expedition = s_Expedition;
+    QString sd_Expedition = "";
 
 // **********************************************************************************************
 
     sd_Expedition = s_Expedition.section( "_nav", 0, 0 ).replace( "_", "/" );
+
+    j = 1;
 
     while ( j<sl_crInput.count() )
     {
@@ -628,7 +701,25 @@ int MainWindow::findExpeditionID( const QString &s_Expedition, const QStringList
             j++;
     }
 
-    return( -999 );
+// **********************************************************************************************
+
+    sd_Expedition = s_Expedition.section( "_", 0, 0 );
+
+    j = 1;
+
+    while ( j<sl_crInput.count() )
+    {
+        if ( sl_crInput.at( j ).section( "\t", 0, 0 ) == sd_Expedition )
+            return( j );
+        else if ( sl_crInput.at( j ).section( "\t", 1, 1 ) == sd_Expedition )
+            return( 1000 + j );
+        else
+            j++;
+    }
+
+// **********************************************************************************************
+
+    return( 0 );
 }
 
 // **********************************************************************************************
@@ -704,7 +795,7 @@ void MainWindow::doConvertMastertrack()
 // **********************************************************************************************
 // 2015-01-10
 
-void MainWindow::doCreateMastertrackImportFile()
+int MainWindow::createMastertrackImportFile( const int i_Resolution )
 {
     int     i               = 0;
     int     err             = 0;
@@ -715,6 +806,7 @@ void MainWindow::doCreateMastertrackImportFile()
     QString s_FilenameIn    = "";
     QString s_FilenameOut   = "";
 
+    QStringList sl_Filenames;
     QStringList sl_crInput;
 
 // **********************************************************************************************
@@ -722,6 +814,13 @@ void MainWindow::doCreateMastertrackImportFile()
 
     err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
     err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
+    err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Polar_5.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
+    err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Polar_6.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
+
+    sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
+    sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
+
+    err = concatenateFilesByLines( -1, gs_FilenameFormat, gi_Extension, sl_Filenames, getDataLocation() + "/" + QLatin1String( "CruiseReports.txt" ), gi_CodecOutput, gi_CodecOutput, gi_EOL, 1, false, false, false, false );
 
 // **********************************************************************************************
 
@@ -743,11 +842,14 @@ void MainWindow::doCreateMastertrackImportFile()
                 if ( s_Basis == "he" )
                     readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ), sl_crInput, _UTF8_ );
 
+                if ( s_Basis == "unknown" )
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports.txt" ), sl_crInput, _UTF8_ );
+
                 if ( sl_crInput.count() == 0 )
                     err = _FILENOTEXISTS_;
 
                 if ( err == _NOERROR_ )
-                    err = createMastertrackImportFile( s_FilenameIn, gi_CodecInput, gi_CodecOutput, sl_crInput, gsl_FilenameList.count() );
+                    err = createMastertrackImportFile( s_FilenameIn, gi_CodecInput, gi_CodecOutput, sl_crInput, i_Resolution, gsl_FilenameList.count() );
 
                 stopProgress = incFileProgress( gsl_FilenameList.count(), ++i );
             }
@@ -766,5 +868,25 @@ void MainWindow::doCreateMastertrackImportFile()
 
     endTool( err, stopProgress, gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList, tr( "Done" ), tr( "Creating Mastertrack import file was canceled" ), true, false );
 
-    onError( err );
+    return( err );
+}
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
+// 2015-12-22
+
+void MainWindow::doCreateMastertrackImportFile_30sec()
+{
+    onError( createMastertrackImportFile( _R30SEC_ ) );
+}
+
+void MainWindow::doCreateMastertrackImportFile_1min()
+{
+    onError( createMastertrackImportFile( _R1MIN_ ) );
+}
+
+void MainWindow::doCreateMastertrackImportFile_10min()
+{
+    onError( createMastertrackImportFile( _R10MIN_ ) );
 }

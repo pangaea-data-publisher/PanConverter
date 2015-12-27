@@ -105,8 +105,14 @@ void MainWindow::createActions()
     convertMastertrackAction = new QAction(trUtf8("Mastertrack (convert FIELAX -> PANGAEA)"), this);
     connect(convertMastertrackAction, SIGNAL(triggered()), this, SLOT(doConvertMastertrack()));
 
-    createMastertrackImportFileAction = new QAction(trUtf8("Mastertrack (create import file)"), this);
-    connect(createMastertrackImportFileAction, SIGNAL(triggered()), this, SLOT(doCreateMastertrackImportFile()));
+    createMastertrackImportFile30secAction = new QAction(trUtf8("Mastertrack (create import file in 30 sec resolution)"), this);
+    connect(createMastertrackImportFile30secAction, SIGNAL(triggered()), this, SLOT(doCreateMastertrackImportFile_30sec()));
+
+    createMastertrackImportFile1minAction = new QAction(trUtf8("Mastertrack (create import file in 1 min resolution)"), this);
+    connect(createMastertrackImportFile1minAction, SIGNAL(triggered()), this, SLOT(doCreateMastertrackImportFile_1min()));
+
+    createMastertrackImportFile10minAction = new QAction(trUtf8("Mastertrack (create import file in 10 min resolution)"), this);
+    connect(createMastertrackImportFile10minAction, SIGNAL(triggered()), this, SLOT(doCreateMastertrackImportFile_10min()));
 
     convertTSGAction = new QAction(trUtf8("Thermosalinograph (TSG)"), this);
     connect(convertTSGAction, SIGNAL(triggered()), this, SLOT(doConvertTSG()));
@@ -199,7 +205,9 @@ void MainWindow::createMenus()
     converterMenu->addAction( convertCHUAN_stationAction );
     converterMenu->addSeparator();
     converterMenu->addAction( convertMastertrackAction );
-    converterMenu->addAction( createMastertrackImportFileAction );
+    converterMenu->addAction( createMastertrackImportFile30secAction );
+    converterMenu->addAction( createMastertrackImportFile1minAction );
+    converterMenu->addAction( createMastertrackImportFile10minAction );
     converterMenu->addSeparator();
     converterMenu->addAction( convertTSGAction );
     converterMenu->addSeparator();
