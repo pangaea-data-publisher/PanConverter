@@ -489,8 +489,8 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         if ( sl_Parameter.count() > 1 )
         {
             timp << OpenDataDescriptionHeader();
-//          timp << DataSetID( s_DatasetID );
-            timp << DataSetID( "@I@" + s_EventLabel + "@" );
+            timp << DataSetID( s_DatasetID );
+//          timp << DataSetID( "@I@" + s_EventLabel + "@" );
             timp << AuthorIDs( s_Author );
             timp << SourceID( num2str( 32 ) );
             timp << DatasetTitle( s_DatasetTitle );
