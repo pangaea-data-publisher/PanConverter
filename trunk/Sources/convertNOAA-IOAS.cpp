@@ -361,31 +361,48 @@ int MainWindow::convertNOAA_IOAS( const int i_Type, const QString &s_FilenameIn,
                     s_Out.append( sl_Input.at( i ).section( ",", 0, 0 ) + " [" + sl_Input.at( i ).section( ",", 2, 2 ) + "]\t" + sl_Input.at( i ).section( ",", 1, 1 ) );
 
                     s_Out.replace( "WATER TRANS [M]", "Secchi depth, water transparency [m]" );
+                    s_Out.replace( "TRANSPARENCY [M]", "Secchi depth, water transparency [m]" );
+
                     s_Out.replace( "AIRTEMP [C]", "Temperature, air [deg C]" );
+                    s_Out.replace( "AIRTEMP DRY [C]", "Temperature, air, dry bulb [deg C]" );
+                    s_Out.replace( "AIRTEMP WET [C]", "Temperature, air, wet bulb [deg C]" );
+
                     s_Out.replace( "BARPRESS [MBAR]", "Pressure, atmospheric [hPa]" );
-                    s_Out.replace( "WINDDIR [COMPASS]", "Wind direction description [] Compass" );
-                    s_Out.replace( "WINDSP [M/SEC]", "Wind speed [m/s]" );
-                    s_Out.replace( "VISIBILITY [INM]", "Visibility [in m]" );
-                    s_Out.replace( "CLOUDAMT [CODE10]", "Cloud cover [octa]" );
-                    s_Out.replace( "CLOUD TYPE [WMO0500]", "Cloud type [code] WMO0500" );
-                    s_Out.replace( "CLOUD DOWN [CODE10]", "Cloud down [code]" );
-                    s_Out.replace( "WATER COLOR []", "Color [#] of water" );
-                    s_Out.replace( "SWELL [CODE]", "Swell [code]" );
-                    s_Out.replace( "WAVEDIR [DEGREES]", "Wave direction [deg]" );
-                    s_Out.replace( "WAVEHT [M]", "Wave height [m]" );
-                    s_Out.replace( "WINDDIR [DEGREES]", "Wind direction [deg] Compass" );
                     s_Out.replace( "BARPRESS [MMHG]", "Pressure, atmospheric [mmHg]" );
-                    s_Out.replace( "AIRTEMP DRY [C]", "Temperature, air [deg C] dry" );
-                    s_Out.replace( "AIRTEMP WET [C]", "Temperature, air [deg C] wet" );
-                    s_Out.replace( "SEA [CODE]", "Sea state [code]" );
-                    s_Out.replace( "WAVEDIR [COMPASS]", "Wave direction description [deg] Compass" );
-                    s_Out.replace( "WINDFOR [BEAUFORT]", "Wind speed [Bft]" );
-                    s_Out.replace( "WAVEHT [WMO1555]", "Wave height [code] WMO1555" );
-                    s_Out.replace( "REL HUMID [%]", "Humidity, relative [%]" );
+
                     s_Out.replace( "WEATHER []", "Present weather [code]" );
+
+                    s_Out.replace( "CLOUDAMT [CODE10]", "Cloud cover [octa]" );
+                    s_Out.replace( "CLOUD TYPE [WMO0500]", "Cloud type [code]@WMO0500" );
+                    s_Out.replace( "CLOUD DOWN [CODE10]", "Cloud down [code]" );
+
+                    s_Out.replace( "WATER COLOR []", "Color [#]@of water" );
+                    s_Out.replace( "WATER COLOR [FOREL-ULE]", "Color [#]@of water on Forel-Ule scale" );
+
+                    s_Out.replace( "SWELL [CODE]", "Swell [code]" );
+                    s_Out.replace( "SWELLDIR [COMPASS]", "Swell direction description []@Compass" );
+
+                    s_Out.replace( "SEA [CODE]", "Sea state [code]" );
+
+                    s_Out.replace( "WAVEHT [M]", "Wave height [m]" );
+                    s_Out.replace( "WAVEHT [BEAUFORT]", "Wave height [Btf]" );
+                    s_Out.replace( "WAVEHT [WMO1555]", "Wave height [code]@WMO1555" );
+
+                    s_Out.replace( "WAVEDIR [DEGREES]", "Wave mean direction [deg]" );
+                    s_Out.replace( "WAVEDIR [COMPASS]", "Wave mean direction description []@Compass" );
+
+                    s_Out.replace( "WINDDIR [DEGREES]", "Wind direction [deg]@Compass" );
+                    s_Out.replace( "WINDDIR [COMPASS]", "Wind direction description []@Compass" );
+
+                    s_Out.replace( "WINDFOR [BEAUFORT]", "Wind speed [Bft]" );
+                    s_Out.replace( "WINDSP [M/SEC]", "Wind speed [m/s]" );
+
+                    s_Out.replace( "REL HUMID [%]", "Humidity, relative [%]" );
+                    s_Out.replace( "REL HUMID [PERCENT]", "Humidity, relative [%]" );
+
+                    s_Out.replace( "VISIBILITY [CODE]", "Visibility [code]@INM" );
+                    s_Out.replace( "VISIBILITY [INM]", "Visibility [code]@INM" );
                     s_Out.replace( "VISIBILITY [KM]", "Visibility [km]" );
-                    s_Out.replace( "WATER COLOR [FOREL-ULE]", "Color [#] of water on Forel-Ule scale" );
-                    s_Out.replace( "VISIBILITY [CODE]", "Visibility [code] INM" );
 
                     tout << s_Metadata << s_Out << s_EOL;
 
