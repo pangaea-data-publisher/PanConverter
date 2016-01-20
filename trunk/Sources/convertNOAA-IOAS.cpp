@@ -373,7 +373,7 @@ int MainWindow::convertNOAA_IOAS( const int i_Type, const QString &s_FilenameIn,
                     s_Out.replace( "WEATHER []", "Present weather [code]" );
 
                     s_Out.replace( "CLOUDAMT [CODE10]", "Cloud cover [octa]" );
-                    s_Out.replace( "CLOUD TYPE [WMO0500]", "Cloud type [code]@WMO0500" );
+                    s_Out.replace( "CLOUD TYPE [WMO0500]", "Cloud type []@WMO0500" );
                     s_Out.replace( "CLOUD DOWN [CODE10]", "Cloud down [code]" );
 
                     s_Out.replace( "WATER COLOR []", "Color [#]@of water" );
