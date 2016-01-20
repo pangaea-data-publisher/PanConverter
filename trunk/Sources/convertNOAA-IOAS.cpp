@@ -385,7 +385,7 @@ int MainWindow::convertNOAA_IOAS( const int i_Type, const QString &s_FilenameIn,
                     s_Out.replace( "SEA [CODE]", "Sea state [code]" );
 
                     s_Out.replace( "WAVEHT [M]", "Wave height [m]" );
-                    s_Out.replace( "WAVEHT [BEAUFORT]", "Wave height [Btf]" );
+                    s_Out.replace( "WAVEHT [BEAUFORT]", "Wave height related to Beaufort scale []" );
                     s_Out.replace( "WAVEHT [WMO1555]", "Wave height [code]@WMO1555" );
 
                     s_Out.replace( "WAVEDIR [DEGREES]", "Wave mean direction [deg]" );
