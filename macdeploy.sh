@@ -7,10 +7,10 @@ echo - macdeployqt
 cd ~/Development/GitHub/PanConverter
 
 rm -R '../../Distribution/PanConverter/PanConverter.app'
-cp -R './build-PanConverter-Desktop_Qt_5_5_1_clang_64bit-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'
+cp -R './build-PanConverter-Desktop_Qt_5_6_0_clang_64bit-Release/PanConverter.app' '../../Distribution/PanConverter/PanConverter.app'
 cp './trunk/Resources/Info.plist' '../../Distribution/PanConverter/PanConverter.app/Contents/Info.plist'
 
-/Developer/Qt/5.5/clang_64/bin/macdeployqt '../../Distribution/PanConverter/PanConverter.app'
+/Developer/Qt/5.6/clang_64/bin/macdeployqt '../../Distribution/PanConverter/PanConverter.app'
 
 echo - code signing
 
@@ -29,9 +29,7 @@ codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Insti
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqgif.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqicns.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqico.dylib'
-codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqjp2.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqjpeg.dylib'
-codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqmng.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqtga.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqtiff.dylib'
 codesign --force --verify --sign 'Developer ID Application: Alfred-Wegener-Institut fur Polar- und Meeresforschung (AWI)' '../../Distribution/PanConverter/PanConverter.app/Contents/PlugIns/imageformats/libqwbmp.dylib'

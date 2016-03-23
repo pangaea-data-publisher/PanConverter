@@ -98,26 +98,26 @@ int MainWindow::createKmlFile( const QString& s_FilenameIn,
 /*
     tout << "  <ScreenOverlay>\n";
     tout << "    <name>PanConverter logo</name>\n";
-    tout << "    <Icon><href>http://www.pangaea.de/PICS/Pan2Applic_logo.png</href></Icon>\n";
+    tout << "    <Icon><href>https://pangaea.de/PICS/Pan2Applic_logo.png</href></Icon>\n";
     tout << "    <overlayXY x=\"0\" y=\"1\" xunits=\"fraction\" yunits=\"fraction\"/>\n";
     tout << "    <screenXY x=\"5\" y=\"5\" xunits=\"pixels\" yunits=\"insetPixels\"/>\n";
     tout << "    <size x=\"200\" y=\"88\" xunits=\"pixel\" yunits=\"pixel\"/>\n";
     tout << "  </ScreenOverlay>\n";
 */
     tout << "  <Style id=\"red\">\n";
-    tout << "    <Icon><href>http://www.pangaea.de/PICS/circle-red.png</href></Icon>\n";
+    tout << "    <Icon><href>https://pangaea.de/PICS/circle-red.png</href></Icon>\n";
     tout << "  </Style>\n";
     tout << "  <Style id=\"blue\">\n";
-    tout << "    <Icon><href>http://www.pangaea.de/PICS/circle-blue.png</href></Icon>\n";
+    tout << "    <Icon><href>https://pangaea.de/PICS/circle-blue.png</href></Icon>\n";
     tout << "  </Style>\n";
     tout << "  <Style id=\"green\">\n";
-    tout << "    <Icon><href>http://www.pangaea.de/PICS/circle-green.png</href></Icon>\n";
+    tout << "    <Icon><href>https://pangaea.de/PICS/circle-green.png</href></Icon>\n";
     tout << "  </Style>\n";
     tout << "  <Style id=\"orange\">\n";
-    tout << "    <Icon><href>http://www.pangaea.de/PICS/circle-orange.png</href></Icon>\n";
+    tout << "    <Icon><href>https://pangaea.de/PICS/circle-orange.png</href></Icon>\n";
     tout << "  </Style>\n";
     tout << "  <Style id=\"yellow\">\n";
-    tout << "    <Icon><href>http://www.pangaea.de/PICS/circle-yellow.png</href></Icon>\n";
+    tout << "    <Icon><href>https://pangaea.de/PICS/circle-yellow.png</href></Icon>\n";
     tout << "  </Style>\n";
 
 // **********************************************************************************************

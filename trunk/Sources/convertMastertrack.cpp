@@ -48,7 +48,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
     QFileInfo fi( s_FilenameIn );
 
-    s_Expedition     = findExpedition( fi.completeBaseName(), sl_crInput );
+    s_Expedition = findExpedition( fi.completeBaseName(), sl_crInput );
 
     if ( s_Expedition.startsWith( "unknown_" ) == true )
     {
@@ -186,7 +186,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
             tref << "http://hs.pangaea.de/nav/mastertrack/ps/" << s_FilenameExpedition << "_mastertrack_generalized.zip" << s_EOL;
 
             tref << "Station list of POLARSTERN cruise " << s_Expedition << " (" << s_ExpeditionOptional << ")" << "\t";
-            tref << "http://www.pangaea.de/ddi/" << s_FilenameExpedition << ".tab?retr=events/Polarstern/" << s_FilenameExpedition;
+            tref << "https://pangaea.de/ddi/" << s_FilenameExpedition << ".tab?retr=events/Polarstern/" << s_FilenameExpedition;
             tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
 
             tref << "Trackline map and processing report for navigation sensors from POLARSTERN cruise " << s_Expedition << " (" << s_ExpeditionOptional << ")" << "\t";
@@ -207,7 +207,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
             s_FilenameExpedition = sl_crInput.at( i_ExpeditionID ).section( "\t", 1, 1 ).replace( "/", "_" );
 
             tref << "Station list of POLARSTERN cruise " << s_Expedition << "\t";
-            tref << "http://www.pangaea.de/ddi/" << s_FilenameExpedition << ".tab?retr=events/Polarstern/" << s_FilenameExpedition;
+            tref << "https://pangaea.de/ddi/" << s_FilenameExpedition << ".tab?retr=events/Polarstern/" << s_FilenameExpedition;
             tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
 
             tref << "Trackline map and processing report for navigation sensors from POLARSTERN cruise " << s_Expedition << "\t";
@@ -225,7 +225,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
         tref << "http://hs.pangaea.de/nav/mastertrack/he/" << s_Expedition << "_mastertrack_generalized.zip" << s_EOL;
 
         tref << "Station list of HEINCKE cruise " << s_Expedition << "\t";
-        tref << "http://www.pangaea.de/ddi/" << s_Expedition << ".tab?retr=events/Heincke/" << s_Expedition;
+        tref << "https://pangaea.de/ddi/" << s_Expedition << ".tab?retr=events/Heincke/" << s_Expedition;
         tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
 
         tref << "Trackline map and processing report for navigation sensors from HEINCKE cruise " << s_Expedition << "\t";
@@ -242,7 +242,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
         tref << "http://hs.pangaea.de/nav/mastertrack/unknown/" << s_Expedition.section( "unknown_", 1, 1 ) << "_mastertrack_generalized.zip" << s_EOL;
 
         tref << "Station list of unknown cruise " << s_Expedition.section( "unknown_", 1, 1 ) << "\t";
-        tref << "http://www.pangaea.de/ddi/" << s_Expedition.section( "unknown_", 1, 1 ) << ".tab?retr=events/unknown/" << s_Expedition.section( "unknown_", 1, 1 );
+        tref << "https://pangaea.de/ddi/" << s_Expedition.section( "unknown_", 1, 1 ) << ".tab?retr=events/unknown/" << s_Expedition.section( "unknown_", 1, 1 );
         tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
 
         tref << "Trackline map and processing report for navigation sensors from unknown cruise " << s_Expedition.section( "unknown_", 1, 1 ) << "\t";
@@ -743,7 +743,7 @@ void MainWindow::doConvertMastertrack()
 // **********************************************************************************************
 // download CruiseReports_xxx.txt
 
-    err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
+    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
 
 // **********************************************************************************************
 
@@ -812,10 +812,10 @@ int MainWindow::createMastertrackImportFile( const int i_Resolution )
 // **********************************************************************************************
 // download CruiseReports_xxx.txt
 
-    err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
-    err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
-    err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Polar_5.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
-    err = downloadFile( QLatin1String( "http://www.pangaea.de/PHP/cr/CruiseReports_Polar_6.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
+    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
+    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
+    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polar_5.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
+    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polar_6.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
 
     sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
     sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );

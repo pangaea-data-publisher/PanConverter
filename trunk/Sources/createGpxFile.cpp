@@ -93,7 +93,7 @@ int MainWindow::createGpxFile( const QString& s_FilenameIn, const int i_NumOfFil
     tout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
     tout << "<gpx" << endl;
     tout << "version=\"1.1\"" << endl;
-    tout << "creator=\"PanConverter - http://www.pangaea.de/\"" << endl;
+    tout << "creator=\"PanConverter - https://pangaea.de/\"" << endl;
     tout << "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" << endl;
     tout << "xmlns=\"http://www.topografix.com/GPX/1/1\"" << endl;
     tout << "xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" << endl;

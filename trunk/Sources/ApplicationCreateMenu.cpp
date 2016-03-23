@@ -49,8 +49,7 @@ void MainWindow::createActions()
 
     exitAction = new QAction(trUtf8("&Quit"), this);
     exitAction->setShortcut(trUtf8("Ctrl+Q"));
-    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
-
+    connect(exitAction, SIGNAL(triggered()), this, SLOT(exitApplication()));
 
     // converter
 
@@ -168,15 +167,8 @@ void MainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction( setOptionsAction );
 
-#if defined(Q_OS_LINUX)
     fileMenu->addSeparator();
     fileMenu->addAction( exitAction );
-#endif
-
-#if defined(Q_OS_WIN)
-    fileMenu->addSeparator();
-    fileMenu->addAction( exitAction );
-#endif
 
 // **********************************************************************************************
 
