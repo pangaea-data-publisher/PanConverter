@@ -17,7 +17,7 @@
     #endif
 
     const QString _PROGRAMDOI_                       = "doi:10.1594/PANGAEA.823690";
-    const QString _PROGRAMREADME_                    = "http://wiki.pangaea.de/wiki/PanConverter";
+    const QString _PROGRAMREADME_                    = "https://wiki.pangaea.de/wiki/PanConverter";
 
     const QString _VERSION_                          = "1.9";	// Version number, 2016-01-19
     const QChar   _PSEPARATOR_                       = '|';
