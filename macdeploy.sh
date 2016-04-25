@@ -51,7 +51,7 @@ cd '/Volumes/PanConverter'
 rm -rf .fseventsd
 mkdir .fseventsd
 touch .fseventsd/no_log
-cd ~/Development/Distribution
+cd ~/Development/Distribution/PanConverter
 
 echo - verify package
 
@@ -59,3 +59,11 @@ codesign -d '/Volumes/PanConverter/PanConverter.app'
 
 echo
 hdiutil detach '/Volumes/PanConverter'
+
+echo - move application
+
+rm -R /Applications/PanConverter.app
+cp -R PanConverter.app /Applications
+cd ~/Development/Distribution
+
+echo - finished
