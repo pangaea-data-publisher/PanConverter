@@ -40,7 +40,7 @@ int MainWindow::convertNOAA_IOAS( const int i_Type, const QString &s_FilenameIn,
 
     QStringList sl_Input;
 
-    QDateTime   dt;
+    QDateTime   dt = QDateTime().toUTC();
 
     convertPosition *llc = new convertPosition( 4, _DOT_ );
 

@@ -35,7 +35,8 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
     QStringList sl_Input;
 
-    QDateTime   DateTime( QDate( 0001, 01, 01 ) );
+//  QDateTime   DateTime( QDate( 0001, 01, 01 ) );
+    QDateTime   DateTime = QDateTime().toUTC();
 
 // **********************************************************************************************
 // read file
@@ -313,8 +314,11 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
     QStringList sl_Input;
 
-    QDateTime   DateTime1( QDate( 0001, 01, 01 ) );
-    QDateTime   DateTime2( QDate( 0001, 01, 01 ) );
+//  QDateTime   DateTime1( QDate( 0001, 01, 01 ) );
+//  QDateTime   DateTime2( QDate( 0001, 01, 01 ) );
+
+    QDateTime   DateTime1 = QDateTime().toUTC();
+    QDateTime   DateTime2 = QDateTime().toUTC();
 
     QGeoCoordinate  Pos1;
     QGeoCoordinate  Pos2;
