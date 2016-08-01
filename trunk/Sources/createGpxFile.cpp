@@ -98,7 +98,7 @@ int MainWindow::createGpxFile( const QString& s_FilenameIn, const int i_NumOfFil
     tout << "xmlns=\"http://www.topografix.com/GPX/1/1\"" << endl;
     tout << "xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">" << endl;
 
-    tout << "<time>" << QDateTime::currentDateTime().toString( Qt::ISODate ) << "</time>" << endl;
+    tout << "<time>" << QDateTime::currentDateTime().toString( "yyyy-MM-ddThh:mm:ss" ) << "</time>" << endl;
     tout << QString( "<bounds minlat=\"%1\" minlon=\"%2\" maxlat=\"%3\" maxlon=\"%4\"/>" ).arg( f_minlat ).arg( f_minlong ).arg( f_maxlat ).arg( f_maxlong ) << endl;
 
 // **********************************************************************************************

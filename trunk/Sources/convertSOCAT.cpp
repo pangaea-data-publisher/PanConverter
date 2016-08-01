@@ -167,7 +167,7 @@ int MainWindow::convertSOCAT( const QString &s_FilenameIn, const QString &s_File
         QTime time = QTime( sl_Input.at( i ).section( "\t", 8, 8 ).toInt(), sl_Input.at( i ).section( "\t", 9, 9 ).toInt(), 0, 0 );
 
         if ( ( date.isValid() == true ) && ( time.isValid() == true ) )
-            s_Output.append( date.toString( Qt::ISODate ) + "T" + time.toString( Qt::ISODate ) + "\t" );
+            s_Output.append( date.toString( "yyyy-MM-dd" ) + "T" + time.toString( "hh:mm:ss" ) + "\t" );
         else
             s_Output.append( tr( "wrong date and/or time\t" ) );
 
