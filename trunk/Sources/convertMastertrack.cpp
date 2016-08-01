@@ -135,8 +135,16 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
     while ( ( i<n ) && ( stopProgress != _APPBREAK_ ) )
     {
-        DateTime.setDate( QDate::fromString( sl_Input.at( i ).section( "\t", 0, 0 ).section( "T", 0, 0 ), "yyyy-MM-dd" ) );
-        DateTime.setTime( QTime::fromString( sl_Input.at( i ).section( "\t", 0, 0 ).section( "T", 1, 1 ), "hh:mm:ss" ) );
+        if ( sl_Input.at( i ).section( "\t", 0, 0 ).isEmpty() == false )
+        {
+            DateTime.setDate( QDate::fromString( sl_Input.at( i ).section( "\t", 0, 0 ).section( "T", 0, 0 ), "yyyy-MM-dd" ) );
+            DateTime.setTime( QTime::fromString( sl_Input.at( i ).section( "\t", 0, 0 ).section( "T", 1, 1 ), "hh:mm:ss" ) );
+        }
+        else
+        {
+            // Recover time during daylight saving hour in March
+            DateTime = DateTime.addSecs( 1 );
+        }
 
         tout << DateTime.toString( "yyyy-MM-ddThh:mm:ss" ) << "\t" << sl_Input.at( i ).section( "\t", 1, 1 ) << "\t" << sl_Input.at( i ).section( "\t", 2, 2 )  << "\t" << sl_Input.at( i ).section( "\t", 3, 3 ) << s_EOL;
 
