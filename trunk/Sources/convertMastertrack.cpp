@@ -128,10 +128,20 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
 // **********************************************************************************************
 
-    if ( s_FilenameIn.contains( "_generalized" ) == false )
-        tout << "Date/Time (UTC)" << "\t" << "Latitude" << "\t" << "Longitude" << "\t" << "Flag for data source" << s_EOL;
+    if ( sl_Input.at( 0 ).section( "\t", 0, 0 ) == "DATE/TIME [UTC]" ) // is FIELAX format
+    {
+        if ( s_FilenameIn.contains( "_generalized" ) == false )
+            tout << "Date/Time (UTC)" << "\t" << "Latitude" << "\t" << "Longitude" << "\t" << "Flag for data source" << s_EOL;
+        else
+            tout << "Date/Time (UTC)" << "\t" << "Latitude" << "\t" << "Longitude" << s_EOL;
+    }
     else
-        tout << "Date/Time (UTC)" << "\t" << "Latitude" << "\t" << "Longitude" << s_EOL;
+    {
+        if ( s_FilenameIn.contains( "_generalized" ) == false )
+            tout << "DATE/TIME [UTC]" << "\t" << "LAT [DEG]" << "\t" << "LON [DEG]" << "\t" << "NAV [VALUE]" << s_EOL;
+        else
+            tout << "DATE/TIME [UTC]" << "\t" << "LAT [DEG]" << "\t" << "LON [DEG]" << s_EOL;
+    }
 
     while ( ( i<n ) && ( stopProgress != _APPBREAK_ ) )
     {
