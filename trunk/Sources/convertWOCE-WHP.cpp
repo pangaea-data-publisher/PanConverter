@@ -10,7 +10,7 @@
 // **********************************************************************************************
 // 2008-04-07
 
-int MainWindow::WOCEWHPConverter( const QString& s_FilenameIn, const QString& s_FilenameOut )
+int MainWindow::WOCEWHPConverter( const QString &s_FilenameIn, const QString &s_FilenameOut )
 {
     int         i               = 0;
     int         n               = 0;

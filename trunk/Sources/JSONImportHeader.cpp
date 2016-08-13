@@ -43,7 +43,7 @@ QString MainWindow::CloseDataDescriptionHeader()
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::ParentID( const QString& s_ParentID )
+QString MainWindow::ParentID( const QString &s_ParentID )
 {
     QString s_OutputStr = "";
 
@@ -63,7 +63,7 @@ QString MainWindow::ParentID( const QString& s_ParentID )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::DataSetID( const QString& s_DatasetID )
+QString MainWindow::DataSetID( const QString &s_DatasetID )
 {
     QString s_OutputStr = "";
 
@@ -83,7 +83,7 @@ QString MainWindow::DataSetID( const QString& s_DatasetID )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::AuthorIDs( const QString& s_AuthorIDs )
+QString MainWindow::AuthorIDs( const QString &s_AuthorIDs )
 {
     QString s_OutputStr = "";
 
@@ -105,7 +105,7 @@ QString MainWindow::AuthorIDs( const QString& s_AuthorIDs )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::SourceID( const QString& s_SourceID )
+QString MainWindow::SourceID( const QString &s_SourceID )
 {
     QString s_OutputStr = "";
 
@@ -125,7 +125,7 @@ QString MainWindow::SourceID( const QString& s_SourceID )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::DatasetTitle( const QString& s_Text  )
+QString MainWindow::DatasetTitle( const QString &s_Text  )
 {
     QString s_OutputStr = "  ";
     QString sd_Text     = s_Text;
@@ -147,7 +147,7 @@ QString MainWindow::DatasetTitle( const QString& s_Text  )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::Reference( const QString& s_ReferenceID, const int i_RelationTypeID, const QString& s_ReferenceType, const QString& s_EventLabel )
+QString MainWindow::Reference( const QString &s_ReferenceID, const int i_RelationTypeID, const QString &s_ReferenceType, const QString &s_EventLabel )
 {
     QString s_OutputStr = "";
 
@@ -168,7 +168,7 @@ QString MainWindow::Reference( const QString& s_ReferenceID, const int i_Relatio
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::ExportFilename( const QString& s_EventLabel, const QString& s_Text )
+QString MainWindow::ExportFilename( const QString &s_EventLabel, const QString &s_Text )
 {
     QString s_OutputStr = "";
 
@@ -189,7 +189,7 @@ QString MainWindow::ExportFilename( const QString& s_EventLabel, const QString& 
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::EventLabel( const QString& s_EventLabel )
+QString MainWindow::EventLabel( const QString &s_EventLabel )
 {
     QString s_OutputStr = "";
 
@@ -209,7 +209,7 @@ QString MainWindow::EventLabel( const QString& s_EventLabel )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::Parameter( const QString& s_ParameterID, const QString& s_PIID, const QString& s_MethodID, const QString& s_Format, const QString& s_Comment )
+QString MainWindow::Parameter( const QString &s_ParameterID, const QString &s_PIID, const QString &s_MethodID, const QString &s_Format, const QString &s_Comment )
 {
     QString s_OutputStr = "";
 
@@ -237,7 +237,7 @@ QString MainWindow::Parameter( const QString& s_ParameterID, const QString& s_PI
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::Parameter( const QStringList sl_Parameter )
+QString MainWindow::Parameter( const QStringList &sl_Parameter )
 {
     int     NumOfParameters = sl_Parameter.count() - 1;
 
@@ -275,7 +275,7 @@ QString MainWindow::Parameter( const QStringList sl_Parameter )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::DatasetComment( const QString& s_DatasetComment )
+QString MainWindow::DatasetComment( const QString &s_DatasetComment )
 {
     QString s_OutputStr = "";
     QString sd_DatasetComment = s_DatasetComment;
@@ -299,7 +299,7 @@ QString MainWindow::DatasetComment( const QString& s_DatasetComment )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::ProjectIDs( const QString& s_ProjectIDs )
+QString MainWindow::ProjectIDs( const QString &s_ProjectIDs )
 {
     QString s_OutputStr = "";
 
@@ -321,7 +321,7 @@ QString MainWindow::ProjectIDs( const QString& s_ProjectIDs )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::TopologicTypeID( const QString& s_TopologicTypeID )
+QString MainWindow::TopologicTypeID( const QString &s_TopologicTypeID )
 {
     QString s_OutputStr = "";
 
@@ -341,7 +341,7 @@ QString MainWindow::TopologicTypeID( const QString& s_TopologicTypeID )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::StatusID( const QString& s_StatusID )
+QString MainWindow::StatusID( const QString &s_StatusID )
 {
     QString s_OutputStr = "";
 
@@ -361,7 +361,7 @@ QString MainWindow::StatusID( const QString& s_StatusID )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::UserIDs( const QString& s_UserIDs )
+QString MainWindow::UserIDs( const QString &s_UserIDs )
 {
     QString s_OutputStr = "";
 
@@ -383,7 +383,7 @@ QString MainWindow::UserIDs( const QString& s_UserIDs )
 // **********************************************************************************************
 // **********************************************************************************************
 
-QString MainWindow::LoginID( const QString& s_LoginID )
+QString MainWindow::LoginID( const QString &s_LoginID )
 {
     QString s_OutputStr = "  ";
 

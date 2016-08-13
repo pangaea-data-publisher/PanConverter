@@ -8,7 +8,7 @@
 // **********************************************************************************************
 // 2008-04-07
 
-int MainWindow::createGpxFile( const QString& s_FilenameIn, const int i_NumOfFiles )
+int MainWindow::createGpxFile( const QString &s_FilenameIn, const int i_NumOfFiles )
 {
     int         i               = 0;
     int         k               = 0;
@@ -180,7 +180,7 @@ int MainWindow::createGpxFile( const QString& s_FilenameIn, const int i_NumOfFil
 // **********************************************************************************************
 // 2010-07-31
 
-QString MainWindow::extractLatitude( const QString& InputStr )
+QString MainWindow::extractLatitude( const QString &InputStr )
 {
     QString s_Latitude  = InputStr.section( ",", 4, 4 );
 
@@ -201,7 +201,7 @@ QString MainWindow::extractLatitude( const QString& InputStr )
 // **********************************************************************************************
 // 2010-07-31
 
-QString MainWindow::extractLongitude( const QString& InputStr )
+QString MainWindow::extractLongitude( const QString &InputStr )
 {
     QString s_Longitude  = InputStr.section( ",", 5, 5 );
 

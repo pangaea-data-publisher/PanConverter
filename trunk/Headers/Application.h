@@ -112,18 +112,18 @@ public:
     int convertNOAA_IOAS( const int Type, const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertTSG( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int CliwocConverter( const QString &FilenameIn, const QString &FilenameOut, const QString &FilenameConf, const int NumOfFiles );
-    int WOCEWHPConverter( const QString& FilenameIn, const QString& FilenameOut );
+    int WOCEWHPConverter( const QString &FilenameIn, const QString &FilenameOut );
 
     int doGPStoGpxOptionsDialog( int &StartID, int &EndID, QString &TrackName );
     int doGPStoKmlOptionsDialog( int &StartID, int &EndID, int &IconColor, int &IconSize, int &TracklineColor, int &TracklineWidth, QString &TrackName, QString &FilenameGoogleEarthProgram, bool &startGoogleEarth );
-    int createGpxFile( const QString& FilenameIn, const int NumOfFiles );
-    int createKmlFile( const QString& FilenameIn, int &IconColor, int &IconSize, int &TracklineColor, int &TracklineWidth, QString &FilenameGoogleEarthProgram, bool &startGoogleEarth, QString &FilenameOut, const int NumOfFiles );
+    int createGpxFile( const QString &FilenameIn, const int NumOfFiles );
+    int createKmlFile( const QString &FilenameIn, int &IconColor, int &IconSize, int &TracklineColor, int &TracklineWidth, QString &FilenameGoogleEarthProgram, bool &startGoogleEarth, QString &FilenameOut, const int NumOfFiles );
 
-    int startProgram( const QString& Program, const QString& Filename );
-    int startGoogleEarth( const QString& Program, const QString& Filename );
+    int startProgram( const QString &Program, const QString &Filename );
+    int startGoogleEarth( const QString &Program, const QString &Filename );
 
-    QString extractLatitude( const QString& InputStr );
-    QString extractLongitude( const QString& InputStr );
+    QString extractLatitude( const QString &InputStr );
+    QString extractLongitude( const QString &InputStr );
 
     QString findBasis( const QString &Filename );
     QString findExpedition( const QString &Filename, const QStringList &sl_crInput );
@@ -132,22 +132,22 @@ public:
 
     QString OpenDataDescriptionHeader();
     QString CloseDataDescriptionHeader();
-    QString ParentID( const QString& ParentID = "-999" );
-    QString DataSetID( const QString& DatasetID = "-999" );
-    QString AuthorIDs( const QString& AuthorIDs = "-999" );
-    QString SourceID( const QString& SourceID = "-999" );
-    QString DatasetTitle( const QString& Text );
-    QString Reference( const QString &ReferenceID = "-999", const int RelationTypeID = -999, const QString &ReferenceType = "-999", const QString& EventLabel = "" );
-    QString ExportFilename( const QString& EventLabel, const QString& Text );
-    QString EventLabel( const QString& EventLabel = "" );
-    QString Parameter( const QString& ParameterID = "-999", const QString& PIID = "506", const QString& MethodID = "43", const QString& Format = "", const QString& Comment = "" );
-    QString Parameter( const QStringList Parameter );
-    QString DatasetComment( const QString& DatasetComment = "" );
-    QString ProjectIDs( const QString& ProjectID = "-999" );
-    QString TopologicTypeID( const QString& TopologicTypeID = "-999" );
-    QString StatusID( const QString& StatusID = "-999" );
-    QString UserIDs( const QString& UserIDs = "-999" );
-    QString LoginID( const QString& LoginID = "-999" );
+    QString ParentID( const QString &ParentID = "-999" );
+    QString DataSetID( const QString &DatasetID = "-999" );
+    QString AuthorIDs( const QString &AuthorIDs = "-999" );
+    QString SourceID( const QString &SourceID = "-999" );
+    QString DatasetTitle( const QString &Text );
+    QString Reference( const QString &ReferenceID = "-999", const int RelationTypeID = -999, const QString &ReferenceType = "-999", const QString &EventLabel = "" );
+    QString ExportFilename( const QString &EventLabel, const QString &Text );
+    QString EventLabel( const QString &EventLabel = "" );
+    QString Parameter( const QString &ParameterID = "-999", const QString &PIID = "506", const QString &MethodID = "43", const QString &Format = "", const QString &Comment = "" );
+    QString Parameter( const QStringList &Parameter );
+    QString DatasetComment( const QString &DatasetComment = "" );
+    QString ProjectIDs( const QString &ProjectID = "-999" );
+    QString TopologicTypeID( const QString &TopologicTypeID = "-999" );
+    QString StatusID( const QString &StatusID = "-999" );
+    QString UserIDs( const QString &UserIDs = "-999" );
+    QString LoginID( const QString &LoginID = "-999" );
 
     QString num2str( const int num ) { return( QString::number( num ) ); }
     QString num2str( const float num ) { return( QString::number( num ) ); }
@@ -211,16 +211,16 @@ private slots:
 
 private:
     QStringList expandCommandline();
-    QStringList renameFiles( const QStringList Filename, const QString &searchStr, const QString &replaceStr );
+    QStringList renameFiles( const QStringList &Filename, const QString &searchStr, const QString &replaceStr );
     bool buildFilename( const int ActionNumber, const QString &FilenameFormat, const int Extension, const QString &Filename, QString &FilenameIn, QString &FilenameOut );
-    bool containsBinaryFile( const QStringList FilenameList );
+    bool containsBinaryFile( const QStringList &FilenameList );
     bool existsFirstFile( const int ActionNumber, const QString &FilenameFormat, const int Extension, QStringList &FilenameList );
     bool isEmptyLine( const QString &String );
     bool check7z();
     int NumOfSections( const QString &String );
     int addToFilenameList( QStringList &FilenameList, const QString &Filename, const bool showAllFiles = true, const bool decompressFile = false );
     int calcFileSizeClass( const QString &FilenameIn, const int NumOfFiles, const int lowerLimit = 100, const int upperLimit = 1000 );
-    int copyStringList( const QStringList InStringList, QStringList &OutStringList, const QString &s_Pattern = "*" );
+    int copyStringList( const QStringList &InStringList, QStringList &OutStringList, const QString &s_Pattern = "*" );
     int emptyDir( const QString &Dir );
     int decompressFile( const QString &Filename, const bool delZipFile = false );
     int incFileProgress( const int NumOfFiles, const int FileNumber );
@@ -232,12 +232,12 @@ private:
     void appendItem( QStringList &List, const QString &Item, const QString &SS = "", const QString &RS = "" );
     void compressFile( const QString &FilenameIn );
     void clearFilenameList( int &ActionNumber, QStringList &FilenameList );
-    void clearList( QStringList& List );
+    void clearList( QStringList &List );
     void clearMessage();
     void createActions();
     void createMenus();
     void createStatusBar( const bool showProgressBar );
-    void enableMenuItems( const QStringList FilenameList );
+    void enableMenuItems( const QStringList &FilenameList );
     void endTool( const int err, const int stopProgress, int &ActionNumber, const QString &FilenameFormat, const int Extension, QStringList &FilenameList, const QString &doneMessage = "Done", const QString &canceledMessage = "Converter was canceled", const bool clearList = false, const bool incActionNumber = true );
     void initFileProgress( const int NumOfFiles, const QString &FilenameIn, const QString &MessageText );
     void initProgress( const int NumOfFiles, const QString &Filename, const QString &MessageText, const int totalNumberOfSteps );
@@ -250,10 +250,10 @@ private:
     void setNormalCursor();
     void setStatusBar( const QString &Message = "", const int seconds = 0 );
     void setStatusBarFileInProgress( const QString &Filename, const QString &Message = "", const int i_seconds = 0 );
-    void setWTitle( const int ActionNumber, const QString &FilenameFormat, const int Extension, const QStringList FilenameList );
+    void setWTitle( const int ActionNumber, const QString &FilenameFormat, const int Extension, const QStringList &FilenameList );
     void setWaitCursor();
-    void showFilenameList( const int ActionNumber, const QString &FilenameFormat, const int Extension, const QStringList FilenameList );
-    void showList( const QStringList List );
+    void showFilenameList( const int ActionNumber, const QString &FilenameFormat, const int Extension, const QStringList &FilenameList );
+    void showList( const QStringList &List );
     void showMessage( const QString &Message, QStringList &MessageList );
     void wait( const int msec );
 

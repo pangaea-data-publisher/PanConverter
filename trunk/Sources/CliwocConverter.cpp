@@ -8,7 +8,7 @@
 // **********************************************************************************************
 // 2008-04-07
 
-int MainWindow::CliwocConverter( const QString& s_FilenameIn, const QString& s_FilenameOut,  const QString& s_FilenameConf, const int i_NumOfFiles )
+int MainWindow::CliwocConverter( const QString &s_FilenameIn, const QString &s_FilenameOut,  const QString &s_FilenameConf, const int i_NumOfFiles )
 {
     int             k               = 0;
     int             n               = 0;

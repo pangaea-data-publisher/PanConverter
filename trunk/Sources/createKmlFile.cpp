@@ -8,7 +8,7 @@
 // **********************************************************************************************
 // 2008-04-07
 
-int MainWindow::createKmlFile( const QString& s_FilenameIn,
+int MainWindow::createKmlFile( const QString &s_FilenameIn,
                                int &i_IconColor, int &i_IconSize,
                                int &i_TracklineColor, int &i_TracklineWidth,
                                QString &s_FilenameGoogleEarthProgram, bool &b_startGoogleEarth,

@@ -8,7 +8,7 @@
 
 #include "Application.h"
 
-int MainWindow::startProgram( const QString& s_Program, const QString& s_Filename )
+int MainWindow::startProgram( const QString &s_Program, const QString &s_Filename )
 {
     QProcess    process;
     QStringList sl_args;
@@ -58,7 +58,7 @@ int MainWindow::startProgram( const QString& s_Program, const QString& s_Filenam
 // **********************************************************************************************
 // **********************************************************************************************
 
-int MainWindow::startGoogleEarth( const QString& s_FilenameGoogleEarthProgram, const QString& s_FilenameGoogleEarth )
+int MainWindow::startGoogleEarth( const QString &s_FilenameGoogleEarthProgram, const QString &s_FilenameGoogleEarth )
 {
     int err = _NOERROR_;
 
