@@ -165,7 +165,7 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
 
 // **********************************************************************************************
 
-    compressFile( s_FilenameOut );
+    compressFile( s_FilenameOut, _ZIP_, findZip( _ZIP_ ) );
 
     QFileInfo fzip( s_FilenameZip );
 
