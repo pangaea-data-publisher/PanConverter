@@ -30,10 +30,6 @@ macx {
 }
 
 win32 {
-    # OpenSSL
-    LIBS += -LC:/Qt/OpenSSL-Win32/bin -lubsec
-    INCLUDEPATH += C:/Qt/OpenSSL-Win32/include
-
     # Icon
     RC_FILE = ./Resources/Application.rc
 }
@@ -49,7 +45,6 @@ INCLUDEPATH += ./Headers
 
 HEADERS = ./Headers/Application.h \
     ./Headers/Globals.h \
-    ./Headers/Webfile.h \
     ./Headers/convertPosition.h \
     ./Headers/Ellipsoid.h \
     ./Forms/AboutDialog/AboutDialog.h \
@@ -79,7 +74,6 @@ SOURCES = ./Sources/ApplicationInit.cpp \
     ./Sources/createKmlFile.cpp \
     ./Sources/JSONImportHeader.cpp \
     ./Sources/startProgram.cpp \
-    ./Sources/Webfile.cpp \
     ./Forms/AboutDialog/AboutDialog.cpp \
     ./Forms/GeneralOptionsDialog/GeneralOptionsDialog.cpp \
     ./Forms/GPStoGpxOptionsDialog/GPStoGpxOptionsDialog.cpp \

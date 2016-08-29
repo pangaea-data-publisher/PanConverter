@@ -765,7 +765,7 @@ void MainWindow::doConvertMastertrack()
 // **********************************************************************************************
 // download CruiseReports_xxx.txt
 
-    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
+    err = downloadFile( findCurl(), QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
 
 // **********************************************************************************************
 
@@ -834,10 +834,12 @@ int MainWindow::createMastertrackImportFile( const int i_Resolution )
 // **********************************************************************************************
 // download CruiseReports_xxx.txt
 
-    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
-    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
-    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polar_5.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
-    err = downloadFile( QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polar_6.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
+    QString s_Curl = findCurl();
+
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polar_5.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polar_6.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
 
     sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
     sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
