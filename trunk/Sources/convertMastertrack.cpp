@@ -827,14 +827,13 @@ int MainWindow::createMastertrackImportFile( const int i_Resolution )
 
     QString s_FilenameIn    = "";
     QString s_FilenameOut   = "";
+    QString s_Curl          = findCurl();
 
     QStringList sl_Filenames;
     QStringList sl_crInput;
 
 // **********************************************************************************************
 // download CruiseReports_xxx.txt
-
-    QString s_Curl = findCurl();
 
     err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
     err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
