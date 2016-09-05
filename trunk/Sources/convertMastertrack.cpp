@@ -251,6 +251,23 @@ int MainWindow::convertMastertrack( const QString &s_FilenameIn, const int i_Cod
         tref << "hdl:10013/epic." << s_Expedition << s_EOL;
     }
 
+    if ( ( s_Expedition.startsWith( "MSM" ) == false ) && ( s_Expedition.startsWith( "M" ) == true ) )
+    {
+        tref << "Master track of METEOR cruise " << s_Expedition << " in 1 sec resolution ";
+        tref << "(zipped, " << s_FileSize << ")" << "\t";
+        tref << "http://hs.pangaea.de/nav/mastertrack/m/" << s_Expedition << "_mastertrack.zip" << s_EOL;
+
+        tref << "Generalized master track of METEOR cruise " << s_Expedition << "\t";
+        tref << "http://hs.pangaea.de/nav/mastertrack/m/" << s_Expedition << "_mastertrack_generalized.zip" << s_EOL;
+
+        tref << "Station list of METEOR cruise " << s_Expedition << "\t";
+        tref << "https://pangaea.de/ddi/" << s_Expedition << ".tab?retr=events/Meteor_1986/" << s_Expedition;
+        tref << ".retr&conf=events/CruiseReportText.conf&format=textfile" << s_EOL;
+
+        tref << "Trackline map and processing report for navigation sensors from METEOR cruise " << s_Expedition << "\t";
+        tref << "hdl:10013/epic." << s_Expedition << s_EOL;
+    }
+
     if ( s_Expedition.startsWith( "unknown" ) == true )
     {
         tref << "Master track of unknown cruise " << s_Expedition.section( "unknown_", 1, 1 ) << " in 1 sec resolution ";
@@ -467,6 +484,12 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
             if ( s_Basis == "he" )
                 s_DatasetTitle = tr( "Station list and links to master tracks in different resolutions of HEINCKE cruise " );
+
+            if ( s_Basis == "m" )
+                s_DatasetTitle = tr( "Station list and links to master tracks in different resolutions of METEOR cruise " );
+
+            if ( s_Basis == "msm" )
+                s_DatasetTitle = tr( "Station list and links to master tracks in different resolutions of Maria S. Merian cruise " );
         }
         else
         {
@@ -475,14 +498,32 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
            if ( s_Basis == "he" )
                s_DatasetTitle = tr( "Links to master tracks in different resolutions of HEINCKE cruise " );
+
+           if ( s_Basis == "m" )
+               s_DatasetTitle = tr( "Links to master tracks in different resolutions of METEOR cruise " );
+
+           if ( s_Basis == "msm" )
+               s_DatasetTitle = tr( "Links to master tracks in different resolutions of Maria S. Merian cruise " );
         }
 
         if ( sl_crInput.at( i_ExpeditionID ).section( "\t", 0, 0 ).startsWith( "PS" ) == true )
+        {
             s_DatasetTitle.append( s_Expedition );
-        else if ( s_DatasetTitle.isEmpty() == false )
-            s_DatasetTitle.append( s_EventLabel ).append( " (" ).append( s_Expedition ).append( ")" );
+        }
         else
-            s_DatasetTitle = "@D@" + s_EventLabel + "@";
+        {
+            if ( s_DatasetTitle.isEmpty() == false )
+            {
+                if ( s_Expedition.isEmpty() == false )
+                    s_DatasetTitle.append( s_EventLabel ).append( " (" ).append( s_Expedition ).append( ")" );
+                else
+                    s_DatasetTitle.append( s_EventLabel );
+            }
+            else
+            {
+                s_DatasetTitle = "@D@" + s_EventLabel + "@";
+            }
+        }
 
         if ( ( s_LocationStart.isEmpty() == false ) && ( s_LocationEnd.isEmpty() == false )  && ( s_DateBegin.isEmpty() == false )  && ( s_DateEnd.isEmpty() == false ) )
             s_DatasetTitle.append( ", " + s_LocationStart + " - " + s_LocationEnd + ", " + s_DateBegin + " - "  + s_DateEnd );
@@ -514,7 +555,19 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
             timp << DataSetID( s_DatasetID );
 //          timp << DataSetID( "@I@" + s_EventLabel + "@" );
             timp << AuthorIDs( s_Author );
-            timp << SourceID( num2str( 32 ) );
+
+            if ( s_Basis == "ps" )
+                timp << SourceID( num2str( 32 ) );
+
+            if ( s_Basis == "he" )
+                timp << SourceID( num2str( 32 ) );
+
+            if ( s_Basis == "m" )
+                timp << SourceID( num2str( 4 ) );
+
+            if ( s_Basis == "msm" )
+                timp << SourceID( num2str( 4 ) );
+
             timp << DatasetTitle( s_DatasetTitle );
 
             if ( sl_Reference.count() > 0 )
@@ -644,6 +697,9 @@ QString MainWindow::findBasis( const QString &s_Filename )
     if ( fi.baseName().toLower().startsWith( "msm" ) == true )
         return( "msm" );
 
+    if ( fi.baseName().toLower().startsWith( "m" ) == true )
+        return( "m" );
+
     return( "unknown" );
 }
 
@@ -661,6 +717,18 @@ QString MainWindow::findExpedition( const QString &s_Filename, const QStringList
 // **********************************************************************************************
 
     if ( s_Filename.toLower().startsWith( "he" ) == true )
+    {
+        s_Expedition = s_Filename.section( "_nav", 0, 0 ).replace( "_", "/" );
+        return( s_Expedition );
+    }
+
+    if ( s_Filename.toLower().startsWith( "m" ) == true )
+    {
+        s_Expedition = s_Filename.section( "_nav", 0, 0 ).replace( "_", "/" );
+        return( s_Expedition );
+    }
+
+    if ( s_Filename.toLower().startsWith( "msm" ) == true )
     {
         s_Expedition = s_Filename.section( "_nav", 0, 0 ).replace( "_", "/" );
         return( s_Expedition );
@@ -755,6 +823,8 @@ void MainWindow::doConvertMastertrack()
     int     err             = 0;
     int     stopProgress    = 0;
 
+    QString s_Curl          = findCurl();
+
     QString s_Basis         = "unknown";
 
     QString s_FilenameIn    = "";
@@ -765,7 +835,10 @@ void MainWindow::doConvertMastertrack()
 // **********************************************************************************************
 // download CruiseReports_xxx.txt
 
-    err = downloadFile( findCurl(), QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Meteor_1986.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Meteor_1986.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Merian.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Merian.txt" ) );
 
 // **********************************************************************************************
 
@@ -779,13 +852,20 @@ void MainWindow::doConvertMastertrack()
             {
                 s_Basis = findBasis( s_FilenameIn );
 
-                if ( ( s_Basis == "ps" ) && ( sl_crInput.count() == 0 ) )
-                {
+                if ( s_Basis == "ps" )
                     readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ), sl_crInput, _UTF8_ );
 
-                    if ( sl_crInput.count() == 0 )
-                        err = _FILENOTEXISTS_;
-                }
+                if ( s_Basis == "he" )
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ), sl_crInput, _UTF8_ );
+
+                if ( s_Basis == "m" )
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Meteor_1986.txt" ), sl_crInput, _UTF8_ );
+
+                if ( s_Basis == "msm" )
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Merian.txt" ), sl_crInput, _UTF8_ );
+
+                if ( sl_crInput.count() == 0 )
+                    err = _FILENOTEXISTS_;
 
                 if ( err == _NOERROR_ )
                     err = convertMastertrack( s_FilenameIn, gi_CodecInput, gi_CodecOutput, gi_EOL, sl_crInput, gsl_FilenameList.count() );
@@ -837,6 +917,8 @@ int MainWindow::createMastertrackImportFile( const int i_Resolution )
 
     err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polarstern.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polarstern.txt" ) );
     err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Meteor_1986.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Meteor_1986.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Merian.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Merian.txt" ) );
     err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polar_5.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
     err = downloadFile( s_Curl, QLatin1String( "https://pangaea.de/PHP/cr/CruiseReports_Polar_6.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
 
@@ -864,6 +946,12 @@ int MainWindow::createMastertrackImportFile( const int i_Resolution )
 
                 if ( s_Basis == "he" )
                     readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ), sl_crInput, _UTF8_ );
+
+                if ( s_Basis == "m" )
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Meteor_1986.txt" ), sl_crInput, _UTF8_ );
+
+                if ( s_Basis == "msm" )
+                    readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports_Merian.txt" ), sl_crInput, _UTF8_ );
 
                 if ( s_Basis == "unknown" )
                     readFile( getDataLocation() + "/" + QLatin1String( "CruiseReports.txt" ), sl_crInput, _UTF8_ );
