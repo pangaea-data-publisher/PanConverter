@@ -84,41 +84,51 @@ int MainWindow::createKmlFile( const QString &s_FilenameIn,
         return( -20 );
     }
 
-    QTextStream tout( &fout ); tout.setCodec( "UTF-8" );
-
 // **********************************************************************************************
 
     initProgress( i_NumOfFiles, s_FilenameIn, tr( "Creating KML file..." ), 2*sl_Input.count() );
 
 // **********************************************************************************************
 
+    QTextStream tout( &fout );
+    tout.setCodec( "UTF-8" );
+
     tout << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
     tout << "<kml xmlns=\"http://earth.google.com/kml/2.1\">" << endl;
     tout << "<Document>" << endl;
 /*
-    tout << "  <ScreenOverlay>\n";
-    tout << "    <name>PanConverter logo</name>\n";
-    tout << "    <Icon><href>https://pangaea.de/PICS/Pan2Applic_logo.png</href></Icon>\n";
-    tout << "    <overlayXY x=\"0\" y=\"1\" xunits=\"fraction\" yunits=\"fraction\"/>\n";
-    tout << "    <screenXY x=\"5\" y=\"5\" xunits=\"pixels\" yunits=\"insetPixels\"/>\n";
-    tout << "    <size x=\"200\" y=\"88\" xunits=\"pixel\" yunits=\"pixel\"/>\n";
-    tout << "  </ScreenOverlay>\n";
+    tout << "  <ScreenOverlay>" << endl;
+    tout << "    <name>Pan2Applic logo</name>" << endl;
+    tout << "    <Icon><href>http://epic.awi.de/40953/121/Pan2Applic_logo.png</href></Icon>" << endl;
+    tout << "    <overlayXY x=\"0\" y=\"1\" xunits=\"fraction\" yunits=\"fraction\"/>" << endl;
+    tout << "    <screenXY x=\"5\" y=\"5\" xunits=\"pixels\" yunits=\"insetPixels\"/>" << endl;
+    tout << "    <size x=\"200\" y=\"88\" xunits=\"pixel\" yunits=\"pixel\"/>" << endl;
+    tout << "  </ScreenOverlay>" << endl;
 */
-    tout << "  <Style id=\"red\">\n";
-    tout << "    <Icon><href>https://pangaea.de/PICS/circle-red.png</href></Icon>\n";
-    tout << "  </Style>\n";
-    tout << "  <Style id=\"blue\">\n";
-    tout << "    <Icon><href>https://pangaea.de/PICS/circle-blue.png</href></Icon>\n";
-    tout << "  </Style>\n";
-    tout << "  <Style id=\"green\">\n";
-    tout << "    <Icon><href>https://pangaea.de/PICS/circle-green.png</href></Icon>\n";
-    tout << "  </Style>\n";
-    tout << "  <Style id=\"orange\">\n";
-    tout << "    <Icon><href>https://pangaea.de/PICS/circle-orange.png</href></Icon>\n";
-    tout << "  </Style>\n";
-    tout << "  <Style id=\"yellow\">\n";
-    tout << "    <Icon><href>https://pangaea.de/PICS/circle-yellow.png</href></Icon>\n";
-    tout << "  </Style>\n";
+    tout << "  <Style id=\"circle-blue\"><IconStyle><Icon><href>http://epic.awi.de/40953/1/circle-blue.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"circle-green\"><IconStyle><Icon><href>http://epic.awi.de/40953/2/circle-green.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"circle-orange\"><IconStyle><Icon><href>http://epic.awi.de/40953/3/circle-orange.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"circle-red\"><IconStyle><Icon><href>http://epic.awi.de/40953/4/circle-red.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"circle-white\"><IconStyle><Icon><href>http://epic.awi.de/40953/5/circle-white.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"circle-yellow\"><IconStyle><Icon><href>http://epic.awi.de/40953/6/circle-yellow.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"square-blue\"><IconStyle><Icon><href>http://epic.awi.de/40953/7/square-blue.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"square-green\"><IconStyle><Icon><href>http://epic.awi.de/40953/8/square-green.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"square-orange\"><IconStyle><Icon><href>http://epic.awi.de/40953/9/square-orange.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"square-red\"><IconStyle><Icon><href>http://epic.awi.de/40953/10/square-red.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"square-white\"><IconStyle><Icon><href>http://epic.awi.de/40953/11/square-white.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"square-yellow\"><IconStyle><Icon><href>http://epic.awi.de/40953/12/square-yellow.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"star-blue\"><IconStyle><Icon><href>http://epic.awi.de/40953/13/star-blue.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"star-green\"><IconStyle><Icon><href>http://epic.awi.de/40953/14/star-green.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"star-orange\"><IconStyle><Icon><href>http://epic.awi.de/40953/15/star-orange.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"star-red\"><IconStyle><Icon><href>http://epic.awi.de/40953/16/star-red.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"star-white\"><IconStyle><Icon><href>http://epic.awi.de/40953/17/star-white.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"star-yellow\"><IconStyle><Icon><href>http://epic.awi.de/40953/18/star-yellow.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"triangle-blue\"><IconStyle><Icon><href>http://epic.awi.de/40953/19/triangle-blue.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"triangle-green\"><IconStyle><Icon><href>http://epic.awi.de/40953/20/triangle-green.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"triangle-orange\"><IconStyle><Icon><href>http://epic.awi.de/40953/21/triangle-orange.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"triangle-red\"><IconStyle><Icon><href>http://epic.awi.de/40953/22/triangle-red.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"triangle-white\"><IconStyle><Icon><href>http://epic.awi.de/40953/23/triangle-white.png</href></Icon></IconStyle></Style>" << endl;
+    tout << "  <Style id=\"triangle-yellow\"><IconStyle><Icon><href>http://epic.awi.de/40953/24/triangle-yellow.png</href></Icon></IconStyle></Style>" << endl;
 
 // **********************************************************************************************
 // Way points
