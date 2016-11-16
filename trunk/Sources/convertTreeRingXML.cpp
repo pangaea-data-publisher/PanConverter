@@ -65,18 +65,15 @@ int MainWindow::parseTreeRingXML( const QString &s_FilenameIn, const int i_Codec
             i_error = parseTextEntry( Project.firstChildElement( "investigator" ), s_PI );
             i_error = parseTextEntry( Project.firstChildElement( "period" ), s_Date );
 
-
             QDomElement Object   = Project.firstChildElement( "object" );
             QDomElement Location = Object.firstChildElement( "location" );
 
             i_error = parseTextEntry( Object.firstChildElement( "title" ), s_ObjectTitle );
             i_error = parseTextEntry( Object.firstChildElement( "type" ), s_ObjectType );
 
-
             QDomElement Position = Location.firstChildElement( "locationGeometry" ).firstChildElement( "Point" );
 
             i_error = parseTextEntry( Position.firstChildElement( "pos" ), s_Position );
-
 
             QDomElement Address  = Location.firstChildElement( "address" );
 
