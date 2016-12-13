@@ -348,6 +348,7 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
     QStringList sl_Reference;
 
     QStringList sl_Input;
+    QStringList sl_temp;
 
 //  QDateTime   DateTime1( QDate( 0001, 01, 01 ) );
 //  QDateTime   DateTime2( QDate( 0001, 01, 01 ) );
@@ -470,10 +471,10 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         break;
     }
 
+// **********************************************************************************************
+
     if ( s_FilenameIn.contains( "_generalized" ) == false )
     {
-        initProgress( i_NumOfFiles, s_FilenameIn, tr( "Creating import file..." ), sl_Input.count() );
-
         if ( s_Author.isEmpty() == true )
             s_Author = tr( "22483" ); // Anonymous
 
@@ -598,14 +599,15 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
 
 // **********************************************************************************************
 
-        timp << "1599\t1600\t1601\t2960\t2961" << eol;
+        initProgress( i_NumOfFiles, s_FilenameIn, tr( "Creating import file (part 1)..." ), sl_Input.count() );
+
+        sl_temp.clear();
+        sl_temp.append( "1599\t1600\t1601\t2960\t2961" );
 
         i = 1;
+        n = sl_Input.count();
 
-        DateTime1.setDate( QDate::fromString( sl_Input.at( i ).section( "\t", 0, 0 ).section( "T", 0, 0 ), "yyyy-MM-dd" ) );
-        DateTime1.setTime( QTime::fromString( sl_Input.at( i ).section( "\t", 0, 0 ).section( "T", 1, 1 ), "hh:mm:ss" ) );
-
-        i++;
+        DateTime1 = setDateTime( sl_Input.at( i++ ).section( "\t", 0, 0 ) );
 
         while ( ( i<n ) && ( stopProgress != _APPBREAK_ ) )
         {
@@ -614,34 +616,15 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
               && ( sl_Input.at( i ).section( "\t", 1, 1 ).contains( "e-" ) == false )
               && ( sl_Input.at( i ).section( "\t", 2, 2 ).contains( "e-" ) == false ) )
             {
-                DateTime2.setDate( QDate::fromString( sl_Input.at( i ).section( "\t", 0, 0 ).section( "T", 0, 0 ), "yyyy-MM-dd" ) );
-                DateTime2.setTime( QTime::fromString( sl_Input.at( i ).section( "\t", 0, 0 ).section( "T", 1, 1 ), "hh:mm:ss" ) );
+                DateTime2 = setDateTime( sl_Input.at( i ).section( "\t", 0, 0 ) );
 
                 d_Time = (double) DateTime1.secsTo( DateTime2 );
 
                 if ( ( d_Time >= d_TimeResolution ) || ( i == n-1 ) ) // 10 min or last line
                 {
-                    DateTime1.setDate( QDate::fromString( sl_Input.at( i-1 ).section( "\t", 0, 0 ).section( "T", 0, 0 ), "yyyy-MM-dd" ) );
-                    DateTime1.setTime( QTime::fromString( sl_Input.at( i-1 ).section( "\t", 0, 0 ).section( "T", 1, 1 ), "hh:mm:ss" ) );
-
-                    d_Time = (double) DateTime1.secsTo( DateTime2 );
-
-                    Pos1.setLatitude( sl_Input.at( i-1 ).section( "\t", 1, 1 ).toDouble() );
-                    Pos1.setLongitude( sl_Input.at( i-1 ).section( "\t", 2, 2 ).toDouble() );
-                    Pos2.setLatitude( sl_Input.at( i ).section( "\t", 1, 1 ).toDouble() );
-                    Pos2.setLongitude( sl_Input.at( i ).section( "\t", 2, 2 ).toDouble() );
-
-                    d_Distance = (double) Pos1.distanceTo( Pos2 ); // distance in meter
-                    d_Bearing  = (double) Pos1.azimuthTo( Pos2 );  // course in deg
-
-                    s_OutputStr.clear();
-                    s_OutputStr.append( DateTime2.toString( "yyyy-MM-ddThh:mm:ss" ) + "\t" + sl_Input.at( i ).section( "\t", 1, 1 ) + "\t" + sl_Input.at( i ).section( "\t", 2, 2 ) + "\t" );
-                    s_OutputStr.append( QString( "%1\t%2").arg( d_Distance/d_Time * 3.6 / 1.853 ).arg( d_Bearing ) );
-
-                    timp << s_OutputStr << eol;
+                    sl_temp.append( DateTime2.toString( "yyyy-MM-ddThh:mm:ss" ) + "\t" + sl_Input.at( i ).section( "\t", 1, 1 ) + "\t" + sl_Input.at( i ).section( "\t", 2, 2 ) );
 
                     DateTime1 = DateTime2;
-                    Pos1      = Pos2;
                 }
             }
             else
@@ -652,9 +635,52 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
             stopProgress = incProgress( i_NumOfFiles, ++i );
         }
 
+        resetProgress( i_NumOfFiles );
+
 // **********************************************************************************************
 
-        resetProgress( i_NumOfFiles );
+        if ( ( sl_temp.count() > 2 ) && ( stopProgress != _APPBREAK_ ) )
+        {
+            initProgress( i_NumOfFiles, s_FilenameIn, tr( "Creating import file (part 2) ..." ), sl_temp.count() );
+
+            timp << sl_temp.at( 0 ) << eol;
+
+            i = 1;
+            n = sl_temp.count();
+
+            DateTime1 = setDateTime( sl_temp.at( i++ ).section( "\t", 0, 0 ) );
+
+            while ( ( i<n ) && ( stopProgress != _APPBREAK_ ) )
+            {
+                DateTime2 = setDateTime( sl_temp.at( i ).section( "\t", 0, 0 ) );
+
+                d_Time = (double) DateTime1.secsTo( DateTime2 );
+
+                Pos1.setLatitude( sl_temp.at( i-1 ).section( "\t", 1, 1 ).toDouble() );
+                Pos1.setLongitude( sl_temp.at( i-1 ).section( "\t", 2, 2 ).toDouble() );
+                Pos2.setLatitude( sl_temp.at( i ).section( "\t", 1, 1 ).toDouble() );
+                Pos2.setLongitude( sl_temp.at( i ).section( "\t", 2, 2 ).toDouble() );
+
+                d_Distance = (double) Pos1.distanceTo( Pos2 ); // distance in meter
+                d_Bearing  = (double) Pos1.azimuthTo( Pos2 );  // course in deg
+
+                s_OutputStr.clear();
+                s_OutputStr.append( DateTime2.toString( "yyyy-MM-ddThh:mm:ss" ) + "\t" );            // Date/Time
+                s_OutputStr.append( sl_temp.at( i ).section( "\t", 1, 1 ) + "\t" );                  // Latitude
+                s_OutputStr.append( sl_temp.at( i ).section( "\t", 2, 2 ) + "\t" );                  // Longitude
+                s_OutputStr.append( QString( "%1").arg( d_Distance/d_Time * 3.6 / 1.853 ) + "\t" );  // Speed [kn]
+                s_OutputStr.append( QString( "%1").arg( d_Bearing ) );                               // Direction [deg]
+
+                timp << s_OutputStr << eol;
+
+                DateTime1 = DateTime2;
+                Pos1      = Pos2;
+
+                stopProgress = incProgress( i_NumOfFiles, ++i );
+            }
+
+            resetProgress( i_NumOfFiles );
+        }
     }
     else
     {
@@ -662,12 +688,63 @@ int MainWindow::createMastertrackImportFile( const QString &s_FilenameIn, const 
         timp << "Please choose " << s_Expedition << "_nav.txt and try again" << eol;
     }
 
+// **********************************************************************************************
+
     fimp.close();
 
     if ( stopProgress == _APPBREAK_ )
         return( _APPBREAK_ );
 
     return( _NOERROR_ );
+}
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
+// 2016-12-13
+
+QDateTime MainWindow::setDateTime( const QString s_DateTime )
+{
+    QDateTime   DateTime = QDateTime().toUTC();
+
+    QString     s_Time   = "00:00:00";
+
+// **********************************************************************************************
+
+    if ( s_DateTime.contains( "T" ) == true )
+    {
+        DateTime.setDate( QDate::fromString( s_DateTime.section( "T", 0, 0 ), "yyyy-MM-dd" ) );
+
+        s_Time = s_DateTime.section( "T", 1, 1 );
+
+        switch( s_Time.size() )
+        {
+        case 2:
+            DateTime.setTime( QTime::fromString( s_Time, "hh" ) );
+        break;
+
+        case 5:
+            DateTime.setTime( QTime::fromString( s_Time, "hh:mm" ) );
+        break;
+
+        case 7:
+            DateTime.setTime( QTime::fromString( s_Time, "hh:mm:ss" ) );
+        break;
+
+        default:
+            DateTime.setTime( QTime::fromString( s_Time, "hh:mm:ss" ) );
+        break;
+        }
+    }
+    else
+    {
+        if ( ( s_DateTime.count( "-" ) == 2 ) && ( s_DateTime.size() == 10 ) )
+            DateTime.setDate( QDate::fromString( s_DateTime, "yyyy-MM-dd" ) );
+        else
+            DateTime.setDate( QDate::fromString( "1900-01-01", "yyyy-MM-dd" ) );
+    }
+
+    return( DateTime );
 }
 
 // **********************************************************************************************
