@@ -996,9 +996,11 @@ int MainWindow::createMastertrackImportFile( const int i_Resolution )
     err = downloadFile( s_Curl, QLatin1String( "https://store.pangaea.de/config/cr/CruiseReports_Heincke.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Heincke.txt" ) );
     err = downloadFile( s_Curl, QLatin1String( "https://store.pangaea.de/config/cr/CruiseReports_Meteor_1986.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Meteor_1986.txt" ) );
     err = downloadFile( s_Curl, QLatin1String( "https://store.pangaea.de/config/cr/CruiseReports_Merian.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Merian.txt" ) );
+    err = downloadFile( s_Curl, QLatin1String( "https://store.pangaea.de/config/cr/CruiseReports_Polar_6.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_2.txt" ) );
     err = downloadFile( s_Curl, QLatin1String( "https://store.pangaea.de/config/cr/CruiseReports_Polar_5.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
     err = downloadFile( s_Curl, QLatin1String( "https://store.pangaea.de/config/cr/CruiseReports_Polar_6.txt" ), getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
 
+    sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_2.txt" ) );
     sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_5.txt" ) );
     sl_Filenames.append( getDataLocation() + "/" + QLatin1String( "CruiseReports_Polar_6.txt" ) );
 
