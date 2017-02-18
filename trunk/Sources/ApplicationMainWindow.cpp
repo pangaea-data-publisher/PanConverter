@@ -1816,6 +1816,7 @@ void MainWindow::initFileProgress( const int i_NumOfFiles, const QString &s_File
 
         FileProgressDialog->setWindowModality( Qt::WindowModal );
         FileProgressDialog->setMinimumDuration( 2 );
+        ProgressDialog->setMinimumWidth( 300 );
         FileProgressDialog->show();
         FileProgressDialog->setValue( 0 );
 
