@@ -95,9 +95,10 @@ void MainWindow::createActions()
     convertNOAA_IOAS_ZOOPLANKTON4_Action = new QAction(trUtf8("International Ocean Atlas Series (IOAS) - Zooplankton []"), this);
     connect(convertNOAA_IOAS_ZOOPLANKTON4_Action, SIGNAL(triggered()), this, SLOT(doConvertNOAA_IOAS_Zooplankton4()));
 
+/*
     parseCrossRefXMLAction = new QAction(trUtf8("CrossRef XML file(s)"), this);
     connect(parseCrossRefXMLAction, SIGNAL(triggered()), this, SLOT(doParseCrossRefXML()));
-
+*/
     parseTreeRingXMLAction = new QAction(trUtf8("Tree Ring Data Standard (TRiDaS)"), this);
     connect(parseTreeRingXMLAction, SIGNAL(triggered()), this, SLOT(doParseTreeRingXML()));
 
@@ -112,6 +113,9 @@ void MainWindow::createActions()
 
     createMastertrackImportFile10minAction = new QAction(trUtf8("Mastertrack (create import file in 10 min resolution)"), this);
     connect(createMastertrackImportFile10minAction, SIGNAL(triggered()), this, SLOT(doCreateMastertrackImportFile_10min()));
+
+    convertDShipActionLogAction = new QAction(trUtf8("convert DShip ActionLog -> Event import file"), this);
+    connect(convertDShipActionLogAction, SIGNAL(triggered()), this, SLOT(doConvertDShipActionLog()));
 
     convertTSGAction = new QAction(trUtf8("Thermosalinograph (TSG)"), this);
     connect(convertTSGAction, SIGNAL(triggered()), this, SLOT(doConvertTSG()));
@@ -174,7 +178,12 @@ void MainWindow::createMenus()
 
     converterMenu = menuBar()->addMenu( trUtf8( "Converter" ) );
 
+/*
     converterMenu->addAction( parseCrossRefXMLAction );
+    converterMenu->addSeparator();
+*/
+
+    converterMenu->addAction( convertDShipActionLogAction );
     converterMenu->addSeparator();
     converterMenu->addAction( parseTreeRingXMLAction );
     converterMenu->addSeparator();

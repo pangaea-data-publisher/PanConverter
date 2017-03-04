@@ -1,7 +1,7 @@
 # PanConverter
 # Rainer Sieger
 # Alfred Wegener Institute, Bremerhaven, Germany
-# last change: 2014-10-04
+# last change: 2017-03-04
 
 macx {
     # creating cache file
@@ -63,6 +63,7 @@ SOURCES = ./Sources/ApplicationInit.cpp \
     ./Sources/CliwocConverter.cpp \
     ./Sources/convertCHUAN.cpp \
     ./Sources/convertCrossRefXML.cpp \
+    ./Sources/convertDShipActionLog.cpp \
     ./Sources/convertMastertrack.cpp \
     ./Sources/convertNOAA-IOAS.cpp \
     ./Sources/convertPosition.cpp \
