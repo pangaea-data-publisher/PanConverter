@@ -13,11 +13,23 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
     int         i               = 1;
     int         n               = 0;
 
+    int         i_first         = 0;
+    int         i_last          = 0;
+
     int			stopProgress	= 0;
 
-    QString     s               = "";
-    QString     s_DateTime      = "";
-    QString     s_Position      = "";
+    QString     s_Device        = "";
+
+    QString     s_DateTime1     = "";
+    QString     s_Latitude1     = "";
+    QString     s_Longitude1    = "";
+    QString     s_Elevation1    = "";
+
+    QString     s_DateTime2     = "";
+    QString     s_Latitude2     = "";
+    QString     s_Longitude2    = "";
+    QString     s_Elevation2    = "";
+
     QString     s_EOL           = setEOLChar( i_EOL );
 
     QStringList sl_Input;
@@ -59,15 +71,98 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
 
 // **********************************************************************************************
 
-    tout << "Campaign" << s_EOL;
+    tout << "Campaign" << "\t" << "LabelEvent" << "\t" << "Device" << "\t" << "Device (long)" << "\t" << "Action" << "\t" << "DateTimeEvent" << "\t";
+    tout << "LatitudeEvent" << "\t" << "LongitudeEvent" << "\t" << "ElevationEvent" << "\t";
+    tout << "Action2" << "\t" << "DateTimeEvent2" << "\t" << "LatitudeEvent2" << "\t" << "LongitudeEvent2" << "\t" << "ElevationEvent2" << s_EOL;
 
-    sl_Input.sort();
+// **********************************************************************************************
+
+    i_first = 1;
+    i       = 2;
 
     while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
     {
-        if ( sl_Input.at( i ).toLower().contains( "_underway-") == false )
+        if ( sl_Input.at( i-1 ).section( "\t", 0, 0 ) != sl_Input.at( i ).section( "\t", 0, 0 ) )
         {
-            tout << sl_Input.at( i ) << s_EOL;
+            i_last  = i-1;
+
+            for ( int j = i_first; j <= i_last; j++ )
+            {
+                if ( sl_Input.at( j ).contains( "profile start" ) == true )
+                    i_first = j;
+
+                if ( sl_Input.at( j ).contains( "profile end" ) == true )
+                    i_last = j;
+
+                if ( sl_Input.at( j ).contains( "max depth/on ground" ) == true )
+                {
+                    i_first = j;
+                    i_last  = j;
+                }
+            }
+
+            s_DateTime1 = sl_Input.at( i_first ).section( "\t", 1, 1 ).left( 16 );
+            s_DateTime1.replace( "/", "-" );
+            s_DateTime1.replace( " ", "T" );
+
+            s_DateTime2 = sl_Input.at( i_last ).section( "\t", 1, 1 ).left( 16 );
+            s_DateTime2.replace( "/", "-" );
+            s_DateTime2.replace( " ", "T" );
+
+            s_Latitude1  = QString( "%1" ).arg( sl_Input.at( i_first ).section( "\t", 14, 14 ).toDouble(), 0, 'f', 5 );
+            s_Longitude1 = QString( "%1" ).arg( sl_Input.at( i_first ).section( "\t", 15, 15 ).toDouble(), 0, 'f', 5 );
+
+            s_Latitude2  = QString( "%1" ).arg( sl_Input.at( i_last ).section( "\t", 14, 14 ).toDouble(), 0, 'f', 5 );
+            s_Longitude2 = QString( "%1" ).arg( sl_Input.at( i_last ).section( "\t", 15, 15 ).toDouble(), 0, 'f', 5 );
+
+            s_Elevation1 = "";
+
+            if ( sl_Input.at( i_first ).section( "\t", 11, 11 ) != "0" )
+            {
+                if ( sl_Input.at( i_first ).section( "\t", 11, 11 ).toDouble() > 50. )
+                    s_Elevation1 = QString( "-%1" ).arg( sl_Input.at( i_first ).section( "\t", 11, 11 ).toDouble(), 0, 'f', 0 );
+                else
+                    s_Elevation1 = QString( "-%1" ).arg( sl_Input.at( i_first ).section( "\t", 11, 11 ).toDouble(), 0, 'f', 1 );
+            }
+
+            s_Elevation2 = "";
+
+            if ( sl_Input.at( i_last ).section( "\t", 11, 11 ) != "0" )
+            {
+                if ( sl_Input.at( i_last ).section( "\t", 11, 11 ).toDouble() > 50. )
+                    s_Elevation2 = QString( "-%1" ).arg( sl_Input.at( i_last ).section( "\t", 11, 11 ).toDouble(), 0, 'f', 0 );
+                else
+                    s_Elevation2 = QString( "-%1" ).arg( sl_Input.at( i_last ).section( "\t", 11, 11 ).toDouble(), 0, 'f', 1 );
+            }
+
+            s_Device = sl_Input.at( i_first ).section( "\t", 3, 3 );
+
+            s_Device.replace( "CTDOZE", "CTD-RO" );
+            s_Device.replace( "UCTD", "CTD-UW" );
+            s_Device.replace( "MN_S5", "MSN" );
+            s_Device.replace( "FLOAT", "ARGOFL" );
+
+            if ( sl_Input.at( i_first ).toLower().contains( "_underway-") == false )
+            {
+                if ( i_first == i_last )
+                {
+                    tout << sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 ) + "\t"; // Campaign label
+                    tout << sl_Input.at( i_first ).section( "\t", 0, 0 ) << "\t" << s_Device << "\t";
+                    tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
+                    tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << s_EOL;
+                }
+                else
+                {
+                    tout << sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 ) + "\t"; // Campaign label
+                    tout << sl_Input.at( i_first ).section( "\t", 0, 0 ) << "\t" << s_Device << "\t";
+                    tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
+                    tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << "\t";
+                    tout << sl_Input.at( i_last ).section( "\t", 4, 4 ) << "\t";
+                    tout << s_DateTime2 << "\t" << s_Latitude2 << "\t" << s_Longitude2 << "\t" << s_Elevation2 << s_EOL;
+                }
+            }
+
+            i_first = i;
         }
 
         stopProgress = incProgress( i_NumOfFiles, ++i );
