@@ -88,8 +88,14 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
 
             for ( int j = i_first; j <= i_last; j++ )
             {
+                if ( sl_Input.at( j ).contains( "station start" ) == true )
+                    i_first = j;
+
                 if ( sl_Input.at( j ).contains( "profile start" ) == true )
                     i_first = j;
+
+                if ( sl_Input.at( j ).contains( "station end" ) == true )
+                    i_last = j;
 
                 if ( sl_Input.at( j ).contains( "profile end" ) == true )
                     i_last = j;
@@ -142,24 +148,21 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
             s_Device.replace( "MN_S5", "MSN" );
             s_Device.replace( "FLOAT", "ARGOFL" );
 
-            if ( sl_Input.at( i_first ).toLower().contains( "_underway-") == false )
+            if ( i_first == i_last )
             {
-                if ( i_first == i_last )
-                {
-                    tout << sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 ) + "\t"; // Campaign label
-                    tout << sl_Input.at( i_first ).section( "\t", 0, 0 ) << "\t" << s_Device << "\t";
-                    tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
-                    tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << s_EOL;
-                }
-                else
-                {
-                    tout << sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 ) + "\t"; // Campaign label
-                    tout << sl_Input.at( i_first ).section( "\t", 0, 0 ) << "\t" << s_Device << "\t";
-                    tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
-                    tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << "\t";
-                    tout << sl_Input.at( i_last ).section( "\t", 4, 4 ) << "\t";
-                    tout << s_DateTime2 << "\t" << s_Latitude2 << "\t" << s_Longitude2 << "\t" << s_Elevation2 << s_EOL;
-                }
+                tout << sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 ) + "\t"; // Campaign label
+                tout << sl_Input.at( i_first ).section( "\t", 0, 0 ) << "\t" << s_Device << "\t";
+                tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
+                tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << s_EOL;
+            }
+            else
+            {
+                tout << sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 ) + "\t"; // Campaign label
+                tout << sl_Input.at( i_first ).section( "\t", 0, 0 ) << "\t" << s_Device << "\t";
+                tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
+                tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << "\t";
+                tout << sl_Input.at( i_last ).section( "\t", 4, 4 ) << "\t";
+                tout << s_DateTime2 << "\t" << s_Latitude2 << "\t" << s_Longitude2 << "\t" << s_Elevation2 << s_EOL;
             }
 
             i_first = i;
