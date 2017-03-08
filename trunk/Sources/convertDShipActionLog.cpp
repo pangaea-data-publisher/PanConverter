@@ -18,6 +18,8 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
 
     int			stopProgress	= 0;
 
+    QString     s_CampaignLabel = "";
+    QString     s_EventLabel    = "";
     QString     s_Device        = "";
 
     QString     s_DateTime1     = "";
@@ -107,6 +109,12 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
                 }
             }
 
+            s_CampaignLabel = sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 );
+            s_EventLabel    = sl_Input.at( i_first ).section( "\t", 0, 0 );
+
+            s_EventLabel.replace( "_Underway", "_underway" );
+            s_EventLabel.replace( "_00_", "_0_" );
+
             s_DateTime1 = sl_Input.at( i_first ).section( "\t", 1, 1 ).left( 16 );
             s_DateTime1.replace( "/", "-" );
             s_DateTime1.replace( " ", "T" );
@@ -147,18 +155,25 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
             s_Device.replace( "UCTD", "CTD-UW" );
             s_Device.replace( "MN_S5", "MSN" );
             s_Device.replace( "FLOAT", "ARGOFL" );
+            s_Device.replace( "ADCP_150", "VMADCP-150" );
+            s_Device.replace( "TSG_KEEL", "TSG" );
+            s_Device.replace( "PCO2_GO", "UWPCO2" );
+            s_Device.replace( "PCO2_SUB", "UWPCO2" );
+            s_Device.replace( "WST", "SWEAS" );
+            s_Device.replace( "OCEANET", "UWAOBS" );
+            s_Device.replace( "SPM", "SPEC" );
 
             if ( i_first == i_last )
             {
-                tout << sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 ) + "\t"; // Campaign label
-                tout << sl_Input.at( i_first ).section( "\t", 0, 0 ) << "\t" << s_Device << "\t";
+                tout << s_CampaignLabel + "\t";
+                tout << s_EventLabel << "\t" << s_Device << "\t";
                 tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
                 tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << s_EOL;
             }
             else
             {
-                tout << sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 ) + "\t"; // Campaign label
-                tout << sl_Input.at( i_first ).section( "\t", 0, 0 ) << "\t" << s_Device << "\t";
+                tout << s_CampaignLabel + "\t";
+                tout << s_EventLabel << "\t" << s_Device << "\t";
                 tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
                 tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << "\t";
                 tout << sl_Input.at( i_last ).section( "\t", 4, 4 ) << "\t";
