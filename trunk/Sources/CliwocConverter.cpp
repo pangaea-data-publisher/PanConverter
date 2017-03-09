@@ -63,7 +63,7 @@ int MainWindow::CliwocConverter( const QString &s_FilenameIn, const QString &s_F
     for ( int i=9; i<n; i++ )
     {
         if ( sl_Conf.at( i ).section( "\t", 0, 0 ) == "x" )
-            tout << "\t" << sl_Conf.at( i ).section( "\t", 3, 3 );
+            tout << "\t" << sl_Conf.at( i ).section( "\t", 3, 3 ); // Column no 4: Parameter name
     }
 
     tout << endl;
