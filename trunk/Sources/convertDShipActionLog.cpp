@@ -2,11 +2,12 @@
 /* Dr. Rainer Sieger          */
 
 #include "Application.h"
+#include "convertPosition.h"
 
 // **********************************************************************************************
 // **********************************************************************************************
 // **********************************************************************************************
-// 2008-04-07
+// 2017-04-19
 
 int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QString &s_FilenameOut, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const int i_NumOfFiles )
 {
@@ -17,6 +18,18 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
     int         i_last          = 0;
 
     int			stopProgress	= 0;
+
+    int         i_Format        = -999;
+
+    int			i_Campaign      = 0;
+    int			i_EventLabel    = 0;
+    int			i_DateTime      = 1;
+    int			i_DeviceLong    = 2;
+    int			i_DeviceAbbr    = 3;
+    int			i_Action        = 4;
+    int			i_Latitude      = 9;
+    int			i_Longitude     = 10;
+    int			i_Elevation     = 11;
 
     QString     s_CampaignLabel = "";
     QString     s_EventLabel    = "";
@@ -36,11 +49,33 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
 
     QStringList sl_Input;
 
+    convertPosition *llc = new convertPosition( 5, _DOT_ );
+
 // **********************************************************************************************
 // read file
 
     if ( ( n = readFile( s_FilenameIn, sl_Input, i_CodecInput ) ) < 1 )
         return( -10 );
+
+// **********************************************************************************************
+// check format
+
+    if ( ( sl_Input.at( 0 ).section( "\t", 9, 9 ).startsWith( "Latitude" ) == true ) && ( sl_Input.at( 0 ).section( "\t", 10, 10 ).startsWith( "Longitude" ) == true ) ) // BSH
+    {
+        i_Format     = _BSH_;
+        i_Latitude   = 9;
+        i_Longitude  = 10;
+    }
+
+    if ( ( sl_Input.at( 0 ).section( "\t", 14, 14 ).startsWith( "Latitude" ) == true ) && ( sl_Input.at( 0 ).section( "\t", 15, 15 ).startsWith( "Longitude" ) == true ) ) // AWI
+    {
+        i_Format     = _AWI_;
+        i_Latitude   = 14;
+        i_Longitude  = 15;
+    }
+
+    if ( i_Format < 0 )
+        return( -40 );
 
 // **********************************************************************************************
 // open output file
@@ -109,47 +144,64 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
                 }
             }
 
-            s_CampaignLabel = sl_Input.at( i_first ).section( "\t", 0, 0 ).section( "_", 0, 0 );
-            s_EventLabel    = sl_Input.at( i_first ).section( "\t", 0, 0 );
+            s_CampaignLabel = sl_Input.at( i_first ).section( "\t", i_Campaign, i_Campaign ).section( "_", 0, 0 );
+            s_EventLabel    = sl_Input.at( i_first ).section( "\t", i_EventLabel, i_EventLabel );
 
             s_EventLabel.replace( "_Underway", "_underway" );
             s_EventLabel.replace( "_00_", "_0_" );
 
-            s_DateTime1 = sl_Input.at( i_first ).section( "\t", 1, 1 ).left( 16 );
+            s_DateTime1 = sl_Input.at( i_first ).section( "\t", i_DateTime, i_DateTime ).left( 16 );
             s_DateTime1.replace( "/", "-" );
             s_DateTime1.replace( " ", "T" );
 
-            s_DateTime2 = sl_Input.at( i_last ).section( "\t", 1, 1 ).left( 16 );
+            s_DateTime2 = sl_Input.at( i_last ).section( "\t", i_DateTime, i_DateTime ).left( 16 );
             s_DateTime2.replace( "/", "-" );
             s_DateTime2.replace( " ", "T" );
 
-            s_Latitude1  = QString( "%1" ).arg( sl_Input.at( i_first ).section( "\t", 14, 14 ).toDouble(), 0, 'f', 5 );
-            s_Longitude1 = QString( "%1" ).arg( sl_Input.at( i_first ).section( "\t", 15, 15 ).toDouble(), 0, 'f', 5 );
+            switch ( i_Format )
+            {
+            case _AWI_:
+                s_Latitude1  = QString( "%1" ).arg( sl_Input.at( i_first ).section( "\t", i_Latitude, i_Latitude ).toDouble(), 0, 'f', 5 );
+                s_Longitude1 = QString( "%1" ).arg( sl_Input.at( i_first ).section( "\t", i_Longitude, i_Longitude ).toDouble(), 0, 'f', 5 );
 
-            s_Latitude2  = QString( "%1" ).arg( sl_Input.at( i_last ).section( "\t", 14, 14 ).toDouble(), 0, 'f', 5 );
-            s_Longitude2 = QString( "%1" ).arg( sl_Input.at( i_last ).section( "\t", 15, 15 ).toDouble(), 0, 'f', 5 );
+                s_Latitude2  = QString( "%1" ).arg( sl_Input.at( i_last ).section( "\t", i_Latitude, i_Latitude ).toDouble(), 0, 'f', 5 );
+                s_Longitude2 = QString( "%1" ).arg( sl_Input.at( i_last ).section( "\t", i_Longitude, i_Longitude ).toDouble(), 0, 'f', 5 );
+
+                break;
+
+            case _BSH_:
+                llc->convertLLtoLL( sl_Input.at( i_first ).section( "\t", i_Latitude, i_Latitude ), sl_Input.at( i_first ).section( "\t", i_Longitude, i_Longitude ) );
+
+                s_Latitude1  = llc->Latitude();
+                s_Longitude1 = llc->Longitude();
+
+                llc->convertLLtoLL( sl_Input.at( i_last ).section( "\t", i_Latitude, i_Latitude ), sl_Input.at( i_last ).section( "\t", i_Longitude, i_Longitude ) );
+
+                s_Latitude2  = llc->Latitude();
+                s_Longitude2 = llc->Longitude();
+            }
 
             s_Elevation1 = "";
 
-            if ( sl_Input.at( i_first ).section( "\t", 11, 11 ) != "0" )
+            if ( sl_Input.at( i_first ).section( "\t", i_Elevation, i_Elevation ) != "0" )
             {
-                if ( sl_Input.at( i_first ).section( "\t", 11, 11 ).toDouble() > 50. )
-                    s_Elevation1 = QString( "-%1" ).arg( sl_Input.at( i_first ).section( "\t", 11, 11 ).toDouble(), 0, 'f', 0 );
+                if ( sl_Input.at( i_first ).section( "\t", i_Elevation, i_Elevation ).toDouble() > 50. )
+                    s_Elevation1 = QString( "-%1" ).arg( sl_Input.at( i_first ).section( "\t", i_Elevation, i_Elevation ).toDouble(), 0, 'f', 0 );
                 else
-                    s_Elevation1 = QString( "-%1" ).arg( sl_Input.at( i_first ).section( "\t", 11, 11 ).toDouble(), 0, 'f', 1 );
+                    s_Elevation1 = QString( "-%1" ).arg( sl_Input.at( i_first ).section( "\t", i_Elevation, i_Elevation ).toDouble(), 0, 'f', 1 );
             }
 
             s_Elevation2 = "";
 
-            if ( sl_Input.at( i_last ).section( "\t", 11, 11 ) != "0" )
+            if ( sl_Input.at( i_last ).section( "\t", i_Elevation, i_Elevation ) != "0" )
             {
-                if ( sl_Input.at( i_last ).section( "\t", 11, 11 ).toDouble() > 50. )
-                    s_Elevation2 = QString( "-%1" ).arg( sl_Input.at( i_last ).section( "\t", 11, 11 ).toDouble(), 0, 'f', 0 );
+                if ( sl_Input.at( i_last ).section( "\t", i_Elevation, i_Elevation ).toDouble() > 50. )
+                    s_Elevation2 = QString( "-%1" ).arg( sl_Input.at( i_last ).section( "\t", i_Elevation, i_Elevation ).toDouble(), 0, 'f', 0 );
                 else
-                    s_Elevation2 = QString( "-%1" ).arg( sl_Input.at( i_last ).section( "\t", 11, 11 ).toDouble(), 0, 'f', 1 );
+                    s_Elevation2 = QString( "-%1" ).arg( sl_Input.at( i_last ).section( "\t", i_Elevation, i_Elevation ).toDouble(), 0, 'f', 1 );
             }
 
-            s_Device = sl_Input.at( i_first ).section( "\t", 3, 3 );
+            s_Device = sl_Input.at( i_first ).section( "\t", i_DeviceAbbr, i_DeviceAbbr );
 
             s_Device.replace( "CTDOZE", "CTD-RO" );
             s_Device.replace( "UCTD", "CTD-UW" );
@@ -167,16 +219,16 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
             {
                 tout << s_CampaignLabel + "\t";
                 tout << s_EventLabel << "\t" << s_Device << "\t";
-                tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
+                tout << sl_Input.at( i_first ).section( "\t", i_DeviceLong, i_DeviceLong ) << "\t" << sl_Input.at( i_first ).section( "\t", i_Action, i_Action ) << "\t";
                 tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << s_EOL;
             }
             else
             {
                 tout << s_CampaignLabel + "\t";
                 tout << s_EventLabel << "\t" << s_Device << "\t";
-                tout << sl_Input.at( i_first ).section( "\t", 2, 2 ) << "\t" << sl_Input.at( i_first ).section( "\t", 4, 4 ) << "\t";
+                tout << sl_Input.at( i_first ).section( "\t", i_DeviceLong, i_DeviceLong ) << "\t" << sl_Input.at( i_first ).section( "\t", i_Action, i_Action ) << "\t";
                 tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << "\t";
-                tout << sl_Input.at( i_last ).section( "\t", 4, 4 ) << "\t";
+                tout << sl_Input.at( i_last ).section( "\t", i_Action, i_Action ) << "\t";
                 tout << s_DateTime2 << "\t" << s_Latitude2 << "\t" << s_Longitude2 << "\t" << s_Elevation2 << s_EOL;
             }
 
