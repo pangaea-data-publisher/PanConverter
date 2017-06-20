@@ -68,6 +68,7 @@ SOURCES = ./Sources/ApplicationInit.cpp \
     ./Sources/convertNOAA-IOAS.cpp \
     ./Sources/convertPosition.cpp \
     ./Sources/convertSOCAT.cpp \
+    ./Sources/convertSPE.cpp \
     ./Sources/convertTreeRingXML.cpp \
     ./Sources/convertTSG.cpp \
     ./Sources/convertWOCE-WHP.cpp \

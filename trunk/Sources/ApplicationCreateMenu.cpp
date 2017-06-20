@@ -117,6 +117,9 @@ void MainWindow::createActions()
     convertDShipActionLogAction = new QAction(trUtf8("convert DShip ActionLog -> Event import file"), this);
     connect(convertDShipActionLogAction, SIGNAL(triggered()), this, SLOT(doConvertDShipActionLog()));
 
+    convertSPEAction = new QAction(trUtf8("Avaatech XRF Core Scanner Spectrum (SPE)"), this);
+    connect(convertSPEAction, SIGNAL(triggered()), this, SLOT(doConvertSPE()));
+
     convertTSGAction = new QAction(trUtf8("Thermosalinograph (TSG)"), this);
     connect(convertTSGAction, SIGNAL(triggered()), this, SLOT(doConvertTSG()));
 
@@ -210,6 +213,7 @@ void MainWindow::createMenus()
     converterMenu->addAction( createMastertrackImportFile1minAction );
     converterMenu->addAction( createMastertrackImportFile10minAction );
     converterMenu->addSeparator();
+    converterMenu->addAction( convertSPEAction );
     converterMenu->addAction( convertTSGAction );
     converterMenu->addSeparator();
     converterMenu->addAction( createGpxFileAction );
