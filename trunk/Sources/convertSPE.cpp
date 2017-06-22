@@ -74,7 +74,7 @@ int MainWindow::convertSPE( const QString &s_FilenameIn, const QString &s_Filena
         tempStr = sl_Input.at( i++ ).split( QRegularExpression( "\\s+" ) ).join( "\t" );
         k       = tempStr.section( "\t", 1, 1 ).toInt();
 
-        tout << "keV" << "\t" << "cps" << s_EOL;
+        tout << "Channel" << "\t" << "cps" << s_EOL;
 
         while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
         {
