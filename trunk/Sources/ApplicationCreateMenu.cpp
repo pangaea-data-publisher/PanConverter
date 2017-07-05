@@ -62,8 +62,8 @@ void MainWindow::createActions()
     convertCLIWOCAction = new QAction(trUtf8("International Maritime Meteorological Archive (IMMA)"), this);
     connect(convertCLIWOCAction, SIGNAL(triggered()), this, SLOT(doCliwocConverter()));
 
-    convertSOCATAction = new QAction(trUtf8("Surface Ocean CO2 Atlas (SOCAT)"), this);
-    connect(convertSOCATAction, SIGNAL(triggered()), this, SLOT(doConvertSOCAT()));
+    convertSOCATv5Action = new QAction(trUtf8("Surface Ocean CO2 Atlas (SOCAT), Version 5"), this);
+    connect(convertSOCATv5Action, SIGNAL(triggered()), this, SLOT(doConvertSOCATv5()));
 
     convertNOAA_IOAS_BENTHOS_Action = new QAction(trUtf8("International Ocean Atlas Series (IOAS) - Benthos"), this);
     connect(convertNOAA_IOAS_BENTHOS_Action, SIGNAL(triggered()), this, SLOT(doConvertNOAA_IOAS_Benthos()));
@@ -191,7 +191,7 @@ void MainWindow::createMenus()
     converterMenu->addAction( parseTreeRingXMLAction );
     converterMenu->addSeparator();
     converterMenu->addAction( convertCLIWOCAction );
-    converterMenu->addAction( convertSOCATAction );
+    converterMenu->addAction( convertSOCATv5Action );
 
     converterMenu->addSeparator();
     converterMenu->addAction( convertNOAA_IOAS_BENTHOS_Action );

@@ -108,7 +108,7 @@ public:
 
     int convertCHUAN_station( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertCHUAN_moving( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
-    int convertSOCAT( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
+    int convertSOCATv5( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertSPE( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertMastertrack( const QString &FilenameIn, const int CodecInput, const int CodecOutput, const int EOL, const QStringList &crInput, const int NumOfFiles );
     int createMastertrackImportFile(const QString &FilenameIn, const int CodecInput, const int CodecOutput, const QStringList &crInput, const int Resolution, const int NumOfFiles );
@@ -209,7 +209,7 @@ private slots:
     void doCreateGpxFile();
     void doCreateKmlFile();
     void doCliwocConverter();
-    void doConvertSOCAT();
+    void doConvertSOCATv5();
     void doConvertSPE();
     void doWOCEWHPConverter();
 
@@ -291,7 +291,7 @@ private:
     QAction *getFilesAction;
 
     QAction *compressFilesAction;
-    QAction *convertSOCATAction;
+    QAction *convertSOCATv5Action;
     QAction *convertSPEAction;
     QAction *convertCLIWOCAction;
     QAction *convertDShipActionLogAction;
