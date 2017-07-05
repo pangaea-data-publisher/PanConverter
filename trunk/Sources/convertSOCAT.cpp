@@ -53,33 +53,6 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
     }
 
 // **********************************************************************************************
-// open event import file
-
-    QFileInfo fi( s_FilenameOut );
-
-    QFile fevent( fi.absolutePath() + "/Event_imp_" + fi.completeBaseName() + "." + fi.suffix() );
-
-    if ( fevent.open( QIODevice::WriteOnly | QIODevice::Text) == false )
-        return( -20 );
-
-    QTextStream tevent( &fevent );
-
-    switch ( i_CodecOutput )
-    {
-    case _SYSTEM_:
-        break;
-    case _LATIN1_:
-        tevent.setCodec( QTextCodec::codecForName( "ISO 8859-1" ) );
-        break;
-    case _APPLEROMAN_:
-        tevent.setCodec( QTextCodec::codecForName( "Apple Roman" ) );
-        break;
-    default:
-        tevent.setCodec( QTextCodec::codecForName( "UTF-8" ) );
-        break;
-    }
-
-// **********************************************************************************************
 
     initProgress( i_NumOfFiles, s_FilenameIn, tr( "Converting SOCAT data..." ), sl_Input.count() );
 
@@ -122,7 +95,7 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
 
     tdata << "Salinity, interpolated []@WOA\t";                                                                                     // 18
     tdata << "Pressure, atmospheric, interpolated [hPa]@NCEP\t";                                                                    // 19
-    tdata << "Depth, bathymetric, interpolated [m]@ETOPO\t";                                                                        // 20
+    tdata << "Depth, bathymetric, interpolated/gridded [m]@ETOPO\t";                                                                        // 20
     tdata << "Distance [km]@d2l, estimated distance to major land mass\t";                                                          // 21
     tdata << "xCO2 (air), interpolated [mymol/mol]@GVCO2\t";                                                                        // 22
 
@@ -163,7 +136,7 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
             float f_Latitude = s_Input.section( "\t", 11, 11 ).toFloat();
 
             if ( ( f_Latitude <= 90. ) && ( f_Latitude >= -90. ) )
-                s_Output.append( QString( "%1" ).arg( s_Input.section( "\t", 11, 11 ).toFloat(), 0, 'f', 4 ) + "\t" );
+                s_Output.append( QString( "%1" ).arg( f_Latitude, 0, 'f', 4 ) + "\t" );
             else
                 s_Output.append( "\t" );
         }
@@ -174,8 +147,11 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
         {
             float f_Longitude = s_Input.section( "\t", 10, 10 ).toFloat();
 
+            if ( ( f_Longitude <= 360. ) && ( f_Longitude >= 180. ) )
+                f_Longitude -= 360.;
+
             if ( ( f_Longitude <= 180. ) && ( f_Longitude >= -180. ) )
-                s_Output.append( QString( "%1" ).arg( s_Input.section( "\t", 10, 10 ).toFloat(), 0, 'f', 4 ) + "\t" );
+                s_Output.append( QString( "%1" ).arg( f_Longitude, 0, 'f', 4 ) + "\t" );
             else
                 s_Output.append( "\t" );
         }
@@ -199,19 +175,72 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
     resetProgress( i_NumOfFiles );
 
 // **********************************************************************************************
-// create event import file
 
-    QString s_Input  = "";
-    QString s_Output = "";
+    createEventImportFile( sl_Input.at( s ), sl_Input.at( n-1 ), s_FilenameOut, i_CodecOutput, i_EOL );
 
-    tevent << "LabelEvent\tGear\tDateTimeEvent\tDateTimeEvent2\tLatitudeEvent\tLongitudeEvent\tLatitudeEvent2\tLongitudeEvent2" << s_EOL;
+// **********************************************************************************************
 
-    s_Input  = sl_Input.at( s );
-    s_Input  = s_Input.replace( "NaN", "" );
-    s_Output = s_Input.section( "\t", 0, 0 ) + "-track\t";
+    if ( stopProgress == _APPBREAK_ )
+        return( _APPBREAK_ );
 
-    QDate date = QDate( s_Input.section( "\t", 4, 4 ).toInt(), s_Input.section( "\t", 5, 5 ).toInt(), s_Input.section( "\t", 6, 6 ).toInt() );
-    QTime time = QTime( s_Input.section( "\t", 7, 7 ).toInt(), s_Input.section( "\t", 8, 8 ).toInt(), s_Input.section( "\t", 9, 9 ).toFloat(), 0 );
+    return( _NOERROR_ );
+}
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
+// 2017-07-05
+
+int MainWindow::createEventImportFile( const QString &s_First, const QString &s_Last, const QString &s_FilenameOut, const int i_CodecOutput, const int i_EOL )
+{
+    QString s_EOL    = setEOLChar( i_EOL );
+
+    QString s_Input  = s_First;
+    QString s_Output = s_Input.section( "\t", 0, 0 ) + "\t";
+
+    QDate   date;
+    QTime   time;
+
+// **********************************************************************************************
+// open event import file
+
+    QFileInfo fi( s_FilenameOut );
+
+    QFile fevent( fi.absolutePath() + "/Event_imp_" + fi.completeBaseName() + "." + fi.suffix() );
+
+    if ( fevent.open( QIODevice::WriteOnly | QIODevice::Text) == false )
+        return( -20 );
+
+    QTextStream tevent( &fevent );
+
+    switch ( i_CodecOutput )
+    {
+    case _SYSTEM_:
+        break;
+    case _LATIN1_:
+        tevent.setCodec( QTextCodec::codecForName( "ISO 8859-1" ) );
+        break;
+    case _APPLEROMAN_:
+        tevent.setCodec( QTextCodec::codecForName( "Apple Roman" ) );
+        break;
+    default:
+        tevent.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+        break;
+    }
+
+// **********************************************************************************************
+
+    tevent << "Campaign\tLabelEvent\tGear\tDateTimeEvent\tLatitudeEvent\tLongitudeEvent\tDateTimeEvent2\tLatitudeEvent2\tLongitudeEvent2" << s_EOL;
+
+// **********************************************************************************************
+
+    s_Input = s_Input.replace( "NaN", "" );
+
+    s_Output.append( s_Input.section( "\t", 0, 0 ) + "-track" + "\t" );
+    s_Output.append( "CT\t" );
+
+    date = QDate( s_Input.section( "\t", 4, 4 ).toInt(), s_Input.section( "\t", 5, 5 ).toInt(), s_Input.section( "\t", 6, 6 ).toInt() );
+    time = QTime( s_Input.section( "\t", 7, 7 ).toInt(), s_Input.section( "\t", 8, 8 ).toInt(), s_Input.section( "\t", 9, 9 ).toFloat(), 0 );
 
     if ( ( date.isValid() == true ) && ( time.isValid() == true ) )
         s_Output.append( date.toString( "yyyy-MM-dd" ) + "T" + time.toString( "hh:mm:ss" ) + "\t" );
@@ -223,7 +252,7 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
         float f_Latitude = s_Input.section( "\t", 11, 11 ).toFloat();
 
         if ( ( f_Latitude <= 90. ) && ( f_Latitude >= -90. ) )
-            s_Output.append( QString( "%1" ).arg( s_Input.section( "\t", 11, 11 ).toFloat(), 0, 'f', 4 ) + "\t" );
+            s_Output.append( QString( "%1" ).arg( f_Latitude, 0, 'f', 4 ) + "\t" );
         else
             s_Output.append( "\t" );
     }
@@ -234,18 +263,21 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
     {
         float f_Longitude = s_Input.section( "\t", 10, 10 ).toFloat();
 
+        if ( ( f_Longitude <= 360. ) && ( f_Longitude >= 180. ) )
+            f_Longitude -= 360.;
+
         if ( ( f_Longitude <= 180. ) && ( f_Longitude >= -180. ) )
-            s_Output.append( QString( "%1" ).arg( s_Input.section( "\t", 10, 10 ).toFloat(), 0, 'f', 4 ) + "\t" );
+            s_Output.append( QString( "%1" ).arg( f_Longitude, 0, 'f', 4 ) + "\t" );
         else
             s_Output.append( "\t" );
     }
     else
         s_Output.append( "\t" );
 
+// **********************************************************************************************
 
-    s_Input  = sl_Input.at( n );
+    s_Input  = s_Last;
     s_Input  = s_Input.replace( "NaN", "" );
-    s_Output = s_Input.section( "\t", 0, 0 ) + "-track\t";
 
     date     = QDate( s_Input.section( "\t", 4, 4 ).toInt(), s_Input.section( "\t", 5, 5 ).toInt(), s_Input.section( "\t", 6, 6 ).toInt() );
     time     = QTime( s_Input.section( "\t", 7, 7 ).toInt(), s_Input.section( "\t", 8, 8 ).toInt(), s_Input.section( "\t", 9, 9 ).toFloat(), 0 );
@@ -260,7 +292,7 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
         float f_Latitude = s_Input.section( "\t", 11, 11 ).toFloat();
 
         if ( ( f_Latitude <= 90. ) && ( f_Latitude >= -90. ) )
-            s_Output.append( QString( "%1" ).arg( s_Input.section( "\t", 11, 11 ).toFloat(), 0, 'f', 4 ) + "\t" );
+            s_Output.append( QString( "%1" ).arg( f_Latitude, 0, 'f', 4 ) + "\t" );
         else
             s_Output.append( "\t" );
     }
@@ -271,8 +303,11 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
     {
         float f_Longitude = s_Input.section( "\t", 10, 10 ).toFloat();
 
+        if ( ( f_Longitude <= 360. ) && ( f_Longitude >= 180. ) )
+            f_Longitude -= 360.;
+
         if ( ( f_Longitude <= 180. ) && ( f_Longitude >= -180. ) )
-            s_Output.append( QString( "%1" ).arg( s_Input.section( "\t", 10, 10 ).toFloat(), 0, 'f', 4 ) + "\t" );
+            s_Output.append( QString( "%1" ).arg( f_Longitude, 0, 'f', 4 ) + "\t" );
         else
             s_Output.append( "\t" );
     }
@@ -282,11 +317,6 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
     tevent << s_Output << s_EOL;
 
     fevent.close();
-
-// **********************************************************************************************
-
-    if ( stopProgress == _APPBREAK_ )
-        return( _APPBREAK_ );
 
     return( _NOERROR_ );
 }
