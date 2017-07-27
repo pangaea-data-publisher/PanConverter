@@ -93,6 +93,7 @@ public:
     double calculateDistance( const double Latitude1, const double Longitude1, const double Latitude2, const double Longitude2 );
 
     QDateTime setDateTime( const QString DateTime );
+    QString createDateTimeOutput( const QString InputStr );
 
     int concatenateFilesByLines( const int ActionNumber, const QString &FilenameFormat, const int Extension, const QStringList &FilenameList, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int SkipNStartLines, const bool IncludeFilename, const bool SkipEmptyLines, const bool SkipCommentLines, const bool b_DeleteInputFile );
     int concatenateFilesByColumns( const int ActionNumber, const QString &FilenameFormat, const int Extension, const QStringList &FilenameList, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int SkipNStartLines, const bool IncludeFilename, const bool DeleteInputFile );

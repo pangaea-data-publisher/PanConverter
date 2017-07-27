@@ -123,13 +123,7 @@ int MainWindow::convertSOCATv5( const QString &s_FilenameIn, const QString &s_Fi
         s_Input  = s_Input.replace( "NaN", "" );
         s_Output = s_Input.section( "\t", 0, 0 ) + "-track\t";
 
-        QDate date = QDate( s_Input.section( "\t", 4, 4 ).toInt(), s_Input.section( "\t", 5, 5 ).toInt(), s_Input.section( "\t", 6, 6 ).toInt() );
-        QTime time = QTime( s_Input.section( "\t", 7, 7 ).toInt(), s_Input.section( "\t", 8, 8 ).toInt(), s_Input.section( "\t", 9, 9 ).toFloat(), 0 );
-
-        if ( ( date.isValid() == true ) && ( time.isValid() == true ) )
-            s_Output.append( date.toString( "yyyy-MM-dd" ) + "T" + time.toString( "hh:mm:ss" ) + "\t" );
-        else
-            s_Output.append( tr( "wrong date and/or time\t" ) );
+        s_Output.append( createDateTimeOutput( s_Input )  + "\t" ) ;
 
         if ( s_Input.section( "\t", 11, 11 ).isEmpty() == false ) // Latitude
         {
@@ -239,13 +233,7 @@ int MainWindow::createEventImportFile( const QString &s_First, const QString &s_
     s_Output.append( s_Input.section( "\t", 0, 0 ) + "-track" + "\t" );
     s_Output.append( "CT\t" );
 
-    date = QDate( s_Input.section( "\t", 4, 4 ).toInt(), s_Input.section( "\t", 5, 5 ).toInt(), s_Input.section( "\t", 6, 6 ).toInt() );
-    time = QTime( s_Input.section( "\t", 7, 7 ).toInt(), s_Input.section( "\t", 8, 8 ).toInt(), s_Input.section( "\t", 9, 9 ).toFloat(), 0 );
-
-    if ( ( date.isValid() == true ) && ( time.isValid() == true ) )
-        s_Output.append( date.toString( "yyyy-MM-dd" ) + "T" + time.toString( "hh:mm:ss" ) + "\t" );
-    else
-        s_Output.append( tr( "wrong date and/or time\t" ) );
+    s_Output.append( createDateTimeOutput( s_Input )  + "\t" ) ;
 
     if ( s_Input.section( "\t", 11, 11 ).isEmpty() == false ) // Latitude
     {
@@ -279,13 +267,7 @@ int MainWindow::createEventImportFile( const QString &s_First, const QString &s_
     s_Input  = s_Last;
     s_Input  = s_Input.replace( "NaN", "" );
 
-    date     = QDate( s_Input.section( "\t", 4, 4 ).toInt(), s_Input.section( "\t", 5, 5 ).toInt(), s_Input.section( "\t", 6, 6 ).toInt() );
-    time     = QTime( s_Input.section( "\t", 7, 7 ).toInt(), s_Input.section( "\t", 8, 8 ).toInt(), s_Input.section( "\t", 9, 9 ).toFloat(), 0 );
-
-    if ( ( date.isValid() == true ) && ( time.isValid() == true ) )
-        s_Output.append( date.toString( "yyyy-MM-dd" ) + "T" + time.toString( "hh:mm:ss" ) + "\t" );
-    else
-        s_Output.append( tr( "wrong date and/or time\t" ) );
+    s_Output.append( createDateTimeOutput( s_Input )  + "\t" ) ;
 
     if ( s_Input.section( "\t", 11, 11 ).isEmpty() == false ) // Latitude
     {
@@ -319,6 +301,68 @@ int MainWindow::createEventImportFile( const QString &s_First, const QString &s_
     fevent.close();
 
     return( _NOERROR_ );
+}
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
+// 2017-07-27
+
+QString MainWindow::createDateTimeOutput( const QString s_Input )
+{
+    QString s_Output = "";
+
+    QDate date = QDate( s_Input.section( "\t", 4, 4 ).toInt(), s_Input.section( "\t", 5, 5 ).toInt(), s_Input.section( "\t", 6, 6 ).toInt() );
+    QTime time = QTime( s_Input.section( "\t", 7, 7 ).toInt(), s_Input.section( "\t", 8, 8 ).toInt(), s_Input.section( "\t", 9, 9 ).toFloat(), 0 );
+
+// **********************************************************************************************
+
+    if ( ( date.isValid() == true ) && ( time.isValid() == true ) )
+    {
+        s_Output.append( date.toString( "yyyy-MM-dd" ) + "T" + time.toString( "hh:mm:ss" ) );
+    }
+    else
+    {
+        // Second chance if something wrong
+        int   i_Year   = s_Input.section( "\t", 4, 4 ).toInt();
+        int   i_Month  = s_Input.section( "\t", 5, 5 ).toInt();
+        int   i_Day    = s_Input.section( "\t", 6, 6 ).toInt();
+        int   i_Hour   = s_Input.section( "\t", 7, 7 ).toInt();
+        int   i_Minute = s_Input.section( "\t", 8, 8 ).toInt();
+        float f_Second = s_Input.section( "\t", 9, 9 ).toFloat();
+
+        if ( f_Second > 59.999 )
+        {
+            f_Second -= 60.;
+            i_Minute += 1;
+        }
+
+        if ( i_Minute > 59 )
+        {
+            i_Minute -= 60;
+            i_Hour   += 1;
+        }
+
+        if ( i_Hour > 23 )
+        {
+            i_Hour -= 24;
+            i_Day  += 1;
+        }
+
+        QDate date = QDate( i_Year, i_Month, i_Day );
+        QTime time = QTime( i_Hour, i_Minute, f_Second, 0 );
+
+        if ( ( date.isValid() == true ) && ( time.isValid() == true ) )
+        {
+            s_Output.append( date.toString( "yyyy-MM-dd" ) + "T" + time.toString( "hh:mm:ss" ) );
+        }
+        else
+        {
+            s_Output.append( tr( "wrong date and/or time" ) );
+        }
+    }
+
+    return( s_Output );
 }
 
 // **********************************************************************************************
