@@ -66,6 +66,7 @@ SOURCES = ./Sources/ApplicationInit.cpp \
     ./Sources/convertDShipActionLog.cpp \
     ./Sources/convertMastertrack.cpp \
     ./Sources/convertNOAA-IOAS.cpp \
+    ./Sources/convertNyaUAS.cpp \
     ./Sources/convertPosition.cpp \
     ./Sources/convertSOCAT.cpp \
     ./Sources/convertSPE.cpp \

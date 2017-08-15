@@ -1,4 +1,4 @@
-/* 2011-05-31                 */
+/* 2017-08-15                 */
 /* Dr. Rainer Sieger          */
 
 #include "Application.h"
@@ -8,11 +8,9 @@
 // **********************************************************************************************
 // 2008-04-07
 
-int MainWindow::convertSPE( const QString &s_FilenameIn, const QString &s_FilenameOut, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const int i_NumOfFiles )
+int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_FilenameOut, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const int i_NumOfFiles )
 {
     int         i               = 1;
-    int         j               = 0;
-    int         k               = 0;
     int         n               = 0;
 
     int			stopProgress	= 0;
@@ -57,13 +55,13 @@ int MainWindow::convertSPE( const QString &s_FilenameIn, const QString &s_Filena
 
 // **********************************************************************************************
 
-    initProgress( i_NumOfFiles, s_FilenameIn, tr( "Converting SPE data..." ), sl_Input.count() );
+    initProgress( i_NumOfFiles, s_FilenameIn, tr( "Converting NYA upper air soundings..." ), sl_Input.count() );
 
 // **********************************************************************************************
 
     while ( ( b_datafound == false ) && ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
     {
-        if ( sl_Input.at( i ).startsWith( "$DATA:") == true )
+        if ( sl_Input.at( i ).contains( "End of Header Information") == true )
             b_datafound = true;
 
         stopProgress = incProgress( i_NumOfFiles, ++i );
@@ -71,19 +69,36 @@ int MainWindow::convertSPE( const QString &s_FilenameIn, const QString &s_Filena
 
     if ( b_datafound == true )
     {
-        tempStr = sl_Input.at( i++ ).split( QRegularExpression( "\\s+" ) ).join( "\t" );
-        k       = tempStr.section( "\t", 1, 1 ).toInt();
+        QDateTime DateTimeStart( QDate( sl_Input.at( 6 ).section( " ", 0, 0 ).toInt(), sl_Input.at( 6 ).section( " ", 1, 1 ).toInt(), sl_Input.at( 6 ).section( " ", 2, 2 ).toInt() ));
 
-        tout << "Channel" << "\t" << "cps" << s_EOL;
+        DateTimeStart = DateTimeStart.addSecs( (qint64) ( sl_Input.at( ++i ).section( " ", 6, 6 ).toFloat() * 3600. ) );
 
         while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
         {
-            tempStr = sl_Input.at( i ).split( QRegularExpression( "\\s+" ) ).join( "\t" );
+            if ( sl_Input.at( i ).startsWith( "ElapTime" ) == true )
+                break;
 
-            n = NumOfSections( tempStr );
+            stopProgress = incProgress( i_NumOfFiles, ++i );
+        }
 
-            for ( j=1; j<n; j++ )
-                tout << QString( "%1\t%2" ).arg( k++ ).arg( tempStr.section( "\t", j, j ) ) << s_EOL;
+        i +=2 ;
+
+        tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tElapsed time [s]\tPressure at given altitude [m]\t";
+        tout << "Geopotential height above sea level [m]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone partial pressure [mPa]\t";
+        tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
+
+        while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
+        {
+            tempStr = sl_Input.at( i ).simplified();
+            tempStr.replace( " ", "\t" );
+            tempStr.replace( "99.99", "" );
+
+            tout << "NYA" << "\t" << DateTimeStart.addSecs( tempStr.section( "\t", 0, 0 ).toLong() ).toString( Qt::ISODate ) << "\t";
+
+            tout << tempStr.section( "\t", 9, 10 ) << "\t" << tempStr.section( "\t", 8, 8 ) << "\t";
+            tout << tempStr.section( "\t", 0, 0 ) << "\t" << tempStr.section( "\t", 1, 2 ) << "\t";
+            tout << QString( "%1" ).arg( tempStr.section( "\t", 3, 3 ).toFloat()-273.15, 0, 'f', 2 ) << "\t";
+            tout << tempStr.section( "\t", 4, 7 ) << s_EOL;
 
             stopProgress = incProgress( i_NumOfFiles, ++i );
         }
@@ -110,7 +125,7 @@ int MainWindow::convertSPE( const QString &s_FilenameIn, const QString &s_Filena
 // **********************************************************************************************
 // 2011-05-31
 
-void MainWindow::doConvertSPE()
+void MainWindow::doConvertNyaUAS()
 {
     int     i               = 0;
     int     err             = 0;
@@ -123,13 +138,13 @@ void MainWindow::doConvertSPE()
 
     if ( existsFirstFile( gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList ) == true )
     {
-        initFileProgress( gsl_FilenameList.count(), gsl_FilenameList.at( 0 ), tr( "Converting SPE data..." ) );
+        initFileProgress( gsl_FilenameList.count(), gsl_FilenameList.at( 0 ), tr( "Converting NYA upper air soundings..." ) );
 
         while ( ( i < gsl_FilenameList.count() ) && ( err == _NOERROR_ ) && ( stopProgress != _APPBREAK_ ) )
         {
             if ( buildFilename( gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList.at( i ), s_FilenameIn, s_FilenameOut ) == true )
             {
-                err = convertSPE( s_FilenameIn, s_FilenameOut, gi_CodecInput, gi_CodecOutput, gi_EOL, gsl_FilenameList.count() );
+                err = convertNyaUAS( s_FilenameIn, s_FilenameOut, gi_CodecInput, gi_CodecOutput, gi_EOL, gsl_FilenameList.count() );
 
                 stopProgress = incFileProgress( gsl_FilenameList.count(), ++i );
             }
@@ -148,7 +163,7 @@ void MainWindow::doConvertSPE()
 
 // **********************************************************************************************
 
-    endTool( err, stopProgress, gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList, tr( "Done" ), tr( "Converting SPE data was canceled" ) );
+    endTool( err, stopProgress, gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList, tr( "Done" ), tr( "Converting NYA upper air soundings was canceled" ) );
 
     onError( err );
 }
