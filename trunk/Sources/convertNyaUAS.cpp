@@ -15,6 +15,8 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
     int			stopProgress	= 0;
 
+    int         i_Type          = 0;
+
     bool        b_datafound     = false;
 
     QString     tempStr         = "";
@@ -76,29 +78,48 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
         while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
         {
             if ( sl_Input.at( i ).startsWith( "ElapTime" ) == true )
+            {
+                if ( sl_Input.at( i ).contains( "Ipmp" ) == false )
+                {
+                    i_Type = 0;
+
+                    tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tElapsed time [s]\tPressure at given altitude [m]\t";
+                    tout << "Geopotential height above sea level [m]\tTemperature, air [deg C]\tHumidity, relative [%]\t";
+                    tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
+                }
+                else
+                {
+                    i_Type = 1;
+
+                    tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tElapsed time [s]\tPressure at given altitude [m]\t";
+                    tout << "Geopotential height above sea level [m]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone, partial pressure [mPa]\t";
+                    tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
+                }
+
                 break;
+            }
 
             stopProgress = incProgress( i_NumOfFiles, ++i );
         }
 
         i +=2 ;
 
-        tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tElapsed time [s]\tPressure at given altitude [m]\t";
-        tout << "Geopotential height above sea level [m]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone partial pressure [mPa]\t";
-        tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
-
         while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
         {
             tempStr = sl_Input.at( i ).simplified();
             tempStr.replace( " ", "\t" );
-            tempStr.replace( "99.99", "" );
+            tempStr.replace( "\t99.99\t", "\t\t" );
 
             tout << "NYA" << "\t" << DateTimeStart.addSecs( tempStr.section( "\t", 0, 0 ).toLong() ).toString( Qt::ISODate ) << "\t";
 
             tout << tempStr.section( "\t", 9, 10 ) << "\t" << tempStr.section( "\t", 8, 8 ) << "\t";
             tout << tempStr.section( "\t", 0, 0 ) << "\t" << tempStr.section( "\t", 1, 2 ) << "\t";
             tout << QString( "%1" ).arg( tempStr.section( "\t", 3, 3 ).toFloat()-273.15, 0, 'f', 2 ) << "\t";
-            tout << tempStr.section( "\t", 4, 7 ) << s_EOL;
+
+            if ( i_Type == 0 )
+                tout << tempStr.section( "\t", 4, 4 ) << "\t" << tempStr.section( "\t", 6, 7 ) << s_EOL;
+            else
+                tout << tempStr.section( "\t", 4, 7 ) << s_EOL;
 
             stopProgress = incProgress( i_NumOfFiles, ++i );
         }
