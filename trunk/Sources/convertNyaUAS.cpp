@@ -176,6 +176,7 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
             if ( tempStr.section( "\t", 3, 3 ) != "999.9" ) // Temperature, air
                 tout << QString( "%1" ).arg( tempStr.section( "\t", 3, 3 ).toFloat()-273.15, 0, 'f', 2 );
+
             tout << "\t";
 
             if ( tempStr.section( "\t", 4, 4 ) != "999" ) // Relative Humidity
@@ -184,12 +185,10 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
             tout << "\t";
 
             if ( ( i_Type == 1 ) && ( tempStr.section( "\t", 5, 5 ) != "99.99" ) ) // Ozone, partial pressure
-                tout << tempStr.section( "\t", 5, 5 );
-
-            tout << "\t";
+                tout << tempStr.section( "\t", 5, 5 ) << "\t";
 
             if ( tempStr.section( "\t", 6, 6 ) != "999" ) // Horizontal wind direction
-                tout << tempStr.section( "\t", 6, 6 ) << "\t";
+                tout << tempStr.section( "\t", 6, 6 );
 
             tout << "\t";
 
