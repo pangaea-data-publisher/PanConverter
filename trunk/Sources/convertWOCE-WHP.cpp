@@ -34,6 +34,9 @@ int MainWindow::WOCEWHPConverter( const QString &s_FilenameIn, const QString &s_
 
     n = readFile( s_FilenameIn, sl_Input );
 
+    if ( n < 1 )
+        return( -40 );
+
 // **********************************************************************************************
 
     QFileInfo fi( s_FilenameIn );
