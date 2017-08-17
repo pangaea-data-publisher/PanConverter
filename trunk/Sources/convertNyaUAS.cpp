@@ -19,6 +19,7 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
     bool        b_datafound     = false;
 
+    QString     s_EventLabel    = "";
     QString     tempStr         = "";
     QString     s_EOL           = setEOLChar( i_EOL );
 
@@ -75,10 +76,12 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
         DateTimeStart = DateTimeStart.addSecs( (qint64) ( sl_Input.at( ++i ).section( " ", 6, 6 ).toFloat() * 3600. ) );
 
+        s_EventLabel = QString( "NYA@%1-%2" ).arg( sl_Input.at( 6 ).section( " ", 0, 0 ).toInt(), 4, 10, QLatin1Char( '0' ) ).arg( sl_Input.at( 6 ).section( " ", 1, 1 ).toInt(), 2, 10, QLatin1Char( '0' ) );
+
         while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
         {
             if ( sl_Input.at( i ).startsWith( "ElapTime" ) == true )
-            {                
+            {
                 if ( sl_Input.at( 3 ).contains( "ECC" ) == false )
                     i_Type = 0;
 
@@ -87,10 +90,9 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
                 if ( i_Type == 0)
                 {
-                    tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tElapsed time [s]\tPressure at given altitude [m]\t";
-                    tout << "Geopotential height above sea level [m]\tTemperature, air [deg C]\tHumidity, relative [%]\t";
+                    tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
+                    tout << "Pressure at given altitude [m]\tTemperature, air [deg C]\tHumidity, relative [%]\t";
                     tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
-
 /*
                     Pressure at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
                     Geopotential height above sea level [m], integrated from pressure and temperature - Default: 99999
@@ -106,8 +108,8 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
                 }
                 else
                 {
-                    tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tElapsed time [s]\tPressure at given altitude [m]\t";
-                    tout << "Geopotential height above sea level [m]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone, partial pressure [mPa]\t";
+                    tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
+                    tout << "Pressure at given altitude [m]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone, partial pressure [mPa]\t";
                     tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
 /*
                     Pressure at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
@@ -140,14 +142,14 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
             tempStr = sl_Input.at( i ).simplified();
             tempStr.replace( " ", "\t" );
 
-            tout << "NYA" << "\t" << DateTimeStart.addSecs( tempStr.section( "\t", 0, 0 ).toLong() ).toString( Qt::ISODate ) << "\t";
+            tout << s_EventLabel << "\t" << DateTimeStart.addSecs( tempStr.section( "\t", 0, 0 ).toLong() ).toString( Qt::ISODate ) << "\t";
 
-            if ( tempStr.section( "\t", 10, 10 ) != "99.999" ) // Latitude
+            if ( tempStr.section( "\t", 10, 10 ) != "99.999" ) // Latitude - GPS
                 tout << tempStr.section( "\t",10, 10 );
 
             tout << "\t";
 
-            if ( tempStr.section( "\t", 9, 9 ) != "999.999" ) // Longitude
+            if ( tempStr.section( "\t", 9, 9 ) != "999.999" ) // Longitude - GPS
             {
                 if ( tempStr.section( "\t", 9, 9 ).toFloat() < 180. )
                     tout << tempStr.section( "\t", 9, 9 );
@@ -157,7 +159,12 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
             tout << "\t";
 
-            if ( tempStr.section( "\t", 8, 8 ) != "99999" ) // Altitude
+            if ( tempStr.section( "\t", 2, 2 ) != "99999" ) // Altitude [m] - Geopotential height above sea level
+                tout << tempStr.section( "\t", 2, 2 );
+
+            tout << "\t";
+
+            if ( tempStr.section( "\t", 8, 8 ) != "99999" ) // Height, geometric [m] - GPS
                 tout << tempStr.section( "\t", 8, 8 );
 
             tout << "\t";
@@ -168,11 +175,6 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
             if ( tempStr.section( "\t", 1, 1 ) != "9999.99" ) // Pressure at given altitude
                 tout << tempStr.section( "\t", 1, 1 );
-
-            tout << "\t";
-
-            if ( tempStr.section( "\t", 2, 2 ) != "99999" ) // Geopotential height above sea level
-                tout << tempStr.section( "\t", 2, 2 );
 
             tout << "\t";
 
@@ -196,6 +198,8 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
             if ( tempStr.section( "\t", 7, 7 ) != "999.9" ) // Horizontal wind speed
                 tout << tempStr.section( "\t", 7, 7 ) << s_EOL;
+
+            s_EventLabel.clear();
 
             stopProgress = incProgress( i_NumOfFiles, ++i );
         }
