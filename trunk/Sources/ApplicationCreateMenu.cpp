@@ -65,8 +65,11 @@ void MainWindow::createActions()
     convertSOCATv5Action = new QAction(trUtf8("Surface Ocean CO2 Atlas (SOCAT), Version 5"), this);
     connect(convertSOCATv5Action, SIGNAL(triggered()), this, SLOT(doConvertSOCATv5()));
 
-    convertNyaUASAction = new QAction(trUtf8("NYA upper air soundings"), this);
-    connect(convertNyaUASAction, SIGNAL(triggered()), this, SLOT(doConvertNyaUAS()));
+    convertNyaUASwithoutOzoneAction = new QAction(trUtf8("NYA upper air soundings"), this);
+    connect(convertNyaUASwithoutOzoneAction, SIGNAL(triggered()), this, SLOT(doConvertNyaUAS_withoutOzone()));
+
+    convertNyaUASwithOzoneAction = new QAction(trUtf8("NYA upper air soundings, including pO3 measurements"), this);
+    connect(convertNyaUASwithOzoneAction, SIGNAL(triggered()), this, SLOT(doConvertNyaUAS_withOzone()));
 
     convertNOAA_IOAS_BENTHOS_Action = new QAction(trUtf8("International Ocean Atlas Series (IOAS) - Benthos"), this);
     connect(convertNOAA_IOAS_BENTHOS_Action, SIGNAL(triggered()), this, SLOT(doConvertNOAA_IOAS_Benthos()));
@@ -191,12 +194,11 @@ void MainWindow::createMenus()
 
     converterMenu->addAction( convertDShipActionLogAction );
     converterMenu->addSeparator();
-    converterMenu->addAction( parseTreeRingXMLAction );
+    converterMenu->addAction( convertNyaUASwithoutOzoneAction );
+    converterMenu->addAction( convertNyaUASwithOzoneAction );
     converterMenu->addSeparator();
-    converterMenu->addAction( convertNyaUASAction );
     converterMenu->addAction( convertCLIWOCAction );
     converterMenu->addAction( convertSOCATv5Action );
-
     converterMenu->addSeparator();
     converterMenu->addAction( convertNOAA_IOAS_BENTHOS_Action );
     converterMenu->addAction( convertNOAA_IOAS_HYDROLOGY_Action );
@@ -217,6 +219,7 @@ void MainWindow::createMenus()
     converterMenu->addAction( createMastertrackImportFile1minAction );
     converterMenu->addAction( createMastertrackImportFile10minAction );
     converterMenu->addSeparator();
+    converterMenu->addAction( parseTreeRingXMLAction );
     converterMenu->addAction( convertSPEAction );
     converterMenu->addAction( convertTSGAction );
     converterMenu->addSeparator();

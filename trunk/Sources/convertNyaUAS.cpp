@@ -8,14 +8,14 @@
 // **********************************************************************************************
 // 2008-04-07
 
-int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_FilenameOut, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const int i_NumOfFiles )
+int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_FilenameOut, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const int i_outputType, const int i_NumOfFiles )
 {
     int         i               = 1;
     int         n               = 0;
 
     int			stopProgress	= 0;
 
-    int         i_Type          = 0;
+    int         i_Type          = 1; // with Ozone
 
     bool        b_datafound     = false;
 
@@ -78,11 +78,15 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
         while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
         {
             if ( sl_Input.at( i ).startsWith( "ElapTime" ) == true )
-            {
+            {                
                 if ( sl_Input.at( 3 ).contains( "ECC" ) == false )
-                {
                     i_Type = 0;
 
+                if ( ( sl_Input.at( 3 ).contains( "ECC" ) == true ) && ( i_outputType == 0 ) )
+                    i_Type = 0;
+
+                if ( i_Type == 0)
+                {
                     tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tElapsed time [s]\tPressure at given altitude [m]\t";
                     tout << "Geopotential height above sea level [m]\tTemperature, air [deg C]\tHumidity, relative [%]\t";
                     tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
@@ -102,8 +106,6 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
                 }
                 else
                 {
-                    i_Type = 1;  // inculding ozone
-
                     tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tElapsed time [s]\tPressure at given altitude [m]\t";
                     tout << "Geopotential height above sea level [m]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone, partial pressure [mPa]\t";
                     tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
@@ -218,9 +220,29 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 // **********************************************************************************************
 // **********************************************************************************************
 // **********************************************************************************************
-// 2011-05-31
+// 2017-08-17
 
-void MainWindow::doConvertNyaUAS()
+void MainWindow::doConvertNyaUAS_withoutOzone()
+{
+    convertNyaUAS( 0 );
+}
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
+// 2017-08-17
+
+void MainWindow::doConvertNyaUAS_withOzone()
+{
+    convertNyaUAS( 1 );
+}
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
+// 2017-08-17
+
+void MainWindow::convertNyaUAS( const int i_outputType )
 {
     int     i               = 0;
     int     err             = 0;
@@ -239,7 +261,11 @@ void MainWindow::doConvertNyaUAS()
         {
             if ( buildFilename( gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList.at( i ), s_FilenameIn, s_FilenameOut ) == true )
             {
-                err = convertNyaUAS( s_FilenameIn, s_FilenameOut, gi_CodecInput, gi_CodecOutput, gi_EOL, gsl_FilenameList.count() );
+                QFileInfo fi( s_FilenameIn );
+
+                s_FilenameOut = fi.absolutePath() + "/" + fi.baseName() + "_" + fi.suffix() + setExtension( gi_Extension ) ;
+
+                err = convertNyaUAS( s_FilenameIn, s_FilenameOut, gi_CodecInput, gi_CodecOutput, gi_EOL, i_outputType, gsl_FilenameList.count() );
 
                 stopProgress = incFileProgress( gsl_FilenameList.count(), ++i );
             }
@@ -258,7 +284,7 @@ void MainWindow::doConvertNyaUAS()
 
 // **********************************************************************************************
 
-    endTool( err, stopProgress, gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList, tr( "Done" ), tr( "Converting NYA upper air soundings was canceled" ) );
+    endTool( err, stopProgress, gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList, tr( "Done" ), tr( "Converting NYA upper air soundings was canceled" ), true, false );
 
     onError( err );
 }

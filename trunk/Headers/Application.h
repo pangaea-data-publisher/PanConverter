@@ -112,7 +112,7 @@ public:
     int convertSOCATv5( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int createEventImportFile( const QString &First, const QString &Last, const QString &FilenameOut, const int CodecOutput, const int EOL );
     int convertSPE( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
-    int convertNyaUAS( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
+    int convertNyaUAS( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int outputType, const int EOL, const int NumOfFiles );
     int convertMastertrack( const QString &FilenameIn, const int CodecInput, const int CodecOutput, const int EOL, const QStringList &crInput, const int NumOfFiles );
     int createMastertrackImportFile(const QString &FilenameIn, const int CodecInput, const int CodecOutput, const QStringList &crInput, const int Resolution, const int NumOfFiles );
     int createMastertrackImportFile( const int Resolution );
@@ -214,7 +214,9 @@ private slots:
     void doCliwocConverter();
     void doConvertSOCATv5();
     void doConvertSPE();
-    void doConvertNyaUAS();
+    void convertNyaUAS( const int outputType );
+    void doConvertNyaUAS_withOzone();
+    void doConvertNyaUAS_withoutOzone();
     void doWOCEWHPConverter();
 
 // Dialogs
@@ -297,7 +299,8 @@ private:
     QAction *compressFilesAction;
     QAction *convertSOCATv5Action;
     QAction *convertSPEAction;
-    QAction *convertNyaUASAction;
+    QAction *convertNyaUASwithoutOzoneAction;
+    QAction *convertNyaUASwithOzoneAction;
     QAction *convertCLIWOCAction;
     QAction *convertDShipActionLogAction;
     QAction *convertCHUAN_stationAction;
