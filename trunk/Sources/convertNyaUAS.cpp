@@ -25,6 +25,8 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
     QStringList sl_Input;
 
+    QFileInfo   fi( s_FilenameOut );
+
 // **********************************************************************************************
 // read file
 
@@ -90,11 +92,11 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
                 if ( i_Type == 0)
                 {
-                    tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
-                    tout << "Pressure at given altitude [m]\tTemperature, air [deg C]\tHumidity, relative [%]\t";
+                    tout << "Event label\tProfile\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
+                    tout << "Pressure, at given altitude [hPa]\tTemperature, air [deg C]\tHumidity, relative [%]\t";
                     tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
 /*
-                    Pressure at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
+                    Pressure, at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
                     Geopotential height above sea level [m], integrated from pressure and temperature - Default: 99999
                     Temperature [K], measured using a radiosonde,  combined uncertainty 0.2-0.4 K - Default: 999.9
                     Relative Humidity [%], combined uncertainty 3-4% - Default: 999
@@ -108,11 +110,11 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
                 }
                 else
                 {
-                    tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
-                    tout << "Pressure at given altitude [m]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone, partial pressure [mPa]\t";
+                    tout << "Event label\tProfile\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
+                    tout << "Pressure, at given altitude [hPa]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone, partial pressure [mPa]\t";
                     tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
 /*
-                    Pressure at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
+                    Pressure, at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
                     Geopotential height above sea level [m], integrated from pressure and temperature - Default: 99999
                     Temperature [K], measured using a radiosonde,  combined uncertainty 0.2-0.4 K - Default: 999.9
                     Relative Humidity [%], combined uncertainty 3-4% - Default: 999
@@ -142,7 +144,7 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
             tempStr = sl_Input.at( i ).simplified();
             tempStr.replace( " ", "\t" );
 
-            tout << s_EventLabel << "\t" << DateTimeStart.addSecs( tempStr.section( "\t", 0, 0 ).toLong() ).toString( Qt::ISODate ) << "\t";
+            tout << s_EventLabel << "\t" << fi.baseName() << "\t" << DateTimeStart.addSecs( tempStr.section( "\t", 0, 0 ).toLong() ).toString( Qt::ISODate ) << "\t";
 
             if ( tempStr.section( "\t", 10, 10 ) != "99.999" ) // Latitude - GPS
                 tout << tempStr.section( "\t",10, 10 );
@@ -198,8 +200,6 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
             if ( tempStr.section( "\t", 7, 7 ) != "999.9" ) // Horizontal wind speed
                 tout << tempStr.section( "\t", 7, 7 ) << s_EOL;
-
-            s_EventLabel.clear();
 
             stopProgress = incProgress( i_NumOfFiles, ++i );
         }
