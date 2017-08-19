@@ -6,7 +6,7 @@
 // **********************************************************************************************
 // **********************************************************************************************
 // **********************************************************************************************
-// 2008-04-07
+// 2017-08-19
 
 int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_FilenameOut, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const int i_outputType, const int i_NumOfFiles )
 {
@@ -15,7 +15,7 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
     int			stopProgress	= 0;
 
-    int         i_Type          = 1; // with Ozone
+    int         i_Type          = -999;
 
     bool        b_datafound     = false;
 
@@ -24,8 +24,6 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
     QString     s_EOL           = setEOLChar( i_EOL );
 
     QStringList sl_Input;
-
-    QFileInfo   fi( s_FilenameOut );
 
 // **********************************************************************************************
 // read file
@@ -78,63 +76,57 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
         DateTimeStart = DateTimeStart.addSecs( (qint64) ( sl_Input.at( ++i ).section( " ", 6, 6 ).toFloat() * 3600. ) );
 
-        s_EventLabel = QString( "NYA@%1-%2" ).arg( sl_Input.at( 6 ).section( " ", 0, 0 ).toInt(), 4, 10, QLatin1Char( '0' ) ).arg( sl_Input.at( 6 ).section( " ", 1, 1 ).toInt(), 2, 10, QLatin1Char( '0' ) );
+        s_EventLabel = QString( "NYA_UAS@%1-%2" ).arg( sl_Input.at( 6 ).section( " ", 0, 0 ).toInt(), 4, 10, QLatin1Char( '0' ) ).arg( sl_Input.at( 6 ).section( " ", 1, 1 ).toInt(), 2, 10, QLatin1Char( '0' ) );
 
         while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
         {
             if ( sl_Input.at( i ).startsWith( "ElapTime" ) == true )
             {
-                if ( sl_Input.at( 3 ).contains( "ECC" ) == false )
+                if ( ( sl_Input.at( 3 ).contains( "ECC" ) == false ) || ( i_outputType == 0 ) )
                     i_Type = 0;
 
-                if ( ( sl_Input.at( 3 ).contains( "ECC" ) == true ) && ( i_outputType == 0 ) )
-                    i_Type = 0;
-
-                if ( i_Type == 0)
-                {
-                    tout << "Event label\tProfile\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
-                    tout << "Pressure, at given altitude [hPa]\tTemperature, air [deg C]\tHumidity, relative [%]\t";
-                    tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
-/*
-                    Pressure, at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
-                    Geopotential height above sea level [m], integrated from pressure and temperature - Default: 99999
-                    Temperature [K], measured using a radiosonde,  combined uncertainty 0.2-0.4 K - Default: 999.9
-                    Relative Humidity [%], combined uncertainty 3-4% - Default: 999
-                    Ozone partial pressure [mPa], derived - Default: 99.99
-                    Horizontal wind direction [degrees] - Default: 999
-                    Horizontal wind speed [m/s] - Default: 999.9
-                    GPS geometric height [m] - Default: 99999
-                    GPS longitude [decimal degrees E] (range: 0.00 - 359.99) - Default: 999.999
-                    GPS latitude [decimal degrees N] - Default: 99.999
-*/
-                }
-                else
-                {
-                    tout << "Event label\tProfile\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
-                    tout << "Pressure, at given altitude [hPa]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone, partial pressure [mPa]\t";
-                    tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
-/*
-                    Pressure, at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
-                    Geopotential height above sea level [m], integrated from pressure and temperature - Default: 99999
-                    Temperature [K], measured using a radiosonde,  combined uncertainty 0.2-0.4 K - Default: 999.9
-                    Relative Humidity [%], combined uncertainty 3-4% - Default: 999
-                    Ozone partial pressure [mPa], derived - Default: 99.99
-                    Horizontal wind direction [degrees] - Default: 999
-                    Horizontal wind speed [m/s] - Default: 999.9
-                    GPS geometric height [m] - Default: 99999
-                    GPS longitude [decimal degrees E] (range: 0.00 - 359.99) - Default: 999.999
-                    GPS latitude [decimal degrees N] - Default: 99.999
-                    Internal temperature [K] (pump) - Default: 999.99
-                    Ozone raw current [microA] - Default: 999.9
-                    Battery voltage [V] - Default: 999.9
-                    Pump current [mA] - Default: 999.9
-*/
-                }
+                if ( ( sl_Input.at( 3 ).contains( "ECC" ) == true ) && ( i_outputType == 1 ) )
+                    i_Type = 1;
 
                 break;
             }
 
             stopProgress = incProgress( i_NumOfFiles, ++i );
+        }
+
+        if ( i_Type > -1 )
+        {
+/*
+            Geopotential height above sea level [m], integrated from pressure and temperature - Default: 99999
+            Pressure, at observation [hPa], combined uncertainty 1.0 hPa (>100hPa), 0.6 hPa (100-3 hPa) - Default: 9999.99
+            Temperature [K], measured using a radiosonde,  combined uncertainty 0.2-0.4 K - Default: 999.9
+            Relative Humidity [%], combined uncertainty 3-4% - Default: 999
+            Ozone partial pressure [mPa], derived - Default: 99.99
+            Horizontal wind direction [degrees] - Default: 999
+            Horizontal wind speed [m/s] - Default: 999.9
+            GPS geometric height [m] - Default: 99999
+            GPS longitude [decimal degrees E] (range: 0.00 - 359.99) - Default: 999.999
+            GPS latitude [decimal degrees N] - Default: 99.999
+            Internal temperature [K] (pump) - Default: 999.99
+            Ozone raw current [microA] - Default: 999.9
+            Battery voltage [V] - Default: 999.9
+            Pump current [mA] - Default: 999.9
+*/
+            switch( i_Type )
+            {
+            case 0:
+                tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
+                tout << "Pressure, at given altitude [hPa]\tTemperature, air [deg C]\tHumidity, relative [%]\t";
+                tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
+                break;
+            case 1:
+                tout << "Event label\tDate/Time\tLatitude\tLongitude\tAltitude [m]\tHeight, geometric [m]\tElapsed time [s]\t";
+                tout << "Pressure, at given altitude [hPa]\tTemperature, air [deg C]\tHumidity, relative [%]\tOzone, partial pressure [mPa]\t";
+                tout << "Wind direction [deg]\tWind speed [m/s]" << s_EOL;
+                break;
+            default:
+                break;
+            }
         }
 
         i +=2 ;
@@ -144,7 +136,7 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
             tempStr = sl_Input.at( i ).simplified();
             tempStr.replace( " ", "\t" );
 
-            tout << s_EventLabel << "\t" << fi.baseName() << "\t" << DateTimeStart.addSecs( tempStr.section( "\t", 0, 0 ).toLong() ).toString( Qt::ISODate ) << "\t";
+            tout << s_EventLabel << "\t" << DateTimeStart.addSecs( tempStr.section( "\t", 0, 0 ).toLong() ).toString( Qt::ISODate ) << "\t";
 
             if ( tempStr.section( "\t", 10, 10 ) != "99.999" ) // Latitude - GPS
                 tout << tempStr.section( "\t",10, 10 );
@@ -175,7 +167,7 @@ int MainWindow::convertNyaUAS( const QString &s_FilenameIn, const QString &s_Fil
 
             tout << "\t";
 
-            if ( tempStr.section( "\t", 1, 1 ) != "9999.99" ) // Pressure at given altitude
+            if ( tempStr.section( "\t", 1, 1 ) != "9999.99" ) // Pressure, at given altitude
                 tout << tempStr.section( "\t", 1, 1 );
 
             tout << "\t";
