@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "PanConverter"
-!define PRODUCT_VERSION "1.21"
+!define PRODUCT_VERSION "1.22"
 !define PRODUCT_PUBLISHER "PANGAEA"
 !define PRODUCT_WEB_SITE "http://www.pangaea.de"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\PanConverter.exe"
@@ -68,7 +68,7 @@ Section "MainSection" SEC01
   File "C:\Users\rsieger\Documents\Development\Distribution\PanConverter\License\gpl-3.0.txt"
   File "C:\Users\rsieger\Documents\Development\Distribution\PanConverter\License\License.txt"
   File "C:\Users\rsieger\Documents\Development\Distribution\PanConverter\License\Readme.txt"
-  
+
   CreateDirectory "$SMPROGRAMS\PANGAEA"
   CreateDirectory "$SMPROGRAMS\PANGAEA\PanConverter"
   CreateShortCut "$SMPROGRAMS\PANGAEA\PanConverter\PanConverter.lnk" "$INSTDIR\PanConverter.exe"
@@ -108,7 +108,7 @@ Section Uninstall
   Delete "$INSTDIR\Qt5Network.dll"
   Delete "$INSTDIR\Qt5Widgets.dll"
   Delete "$INSTDIR\Qt5Xml.dll"
-  Delete "$INSTDIR\Qt5Positioning.dll"  
+  Delete "$INSTDIR\Qt5Positioning.dll"
   Delete "$INSTDIR\libgcc_s_dw2-1.dll"
   Delete "$INSTDIR\libstdc++-6.dll"
   Delete "$INSTDIR\libwinpthread-1.dll"

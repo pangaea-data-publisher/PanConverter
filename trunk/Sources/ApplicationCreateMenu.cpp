@@ -123,6 +123,9 @@ void MainWindow::createActions()
     convertDShipActionLogAction = new QAction(trUtf8("convert DShip ActionLog -> Event import file"), this);
     connect(convertDShipActionLogAction, SIGNAL(triggered()), this, SLOT(doConvertDShipActionLog()));
 
+    convertDShipActionLogCruiseReportAction = new QAction(trUtf8("convert DShip ActionLog -> Cruise report"), this);
+    connect(convertDShipActionLogCruiseReportAction, SIGNAL(triggered()), this, SLOT(doConvertDShipActionLogCruiseReport()));
+
     convertSPEAction = new QAction(trUtf8("Avaatech XRF Core Scanner Spectrum (SPE)"), this);
     connect(convertSPEAction, SIGNAL(triggered()), this, SLOT(doConvertSPE()));
 
@@ -193,6 +196,7 @@ void MainWindow::createMenus()
 */
 
     converterMenu->addAction( convertDShipActionLogAction );
+    converterMenu->addAction( convertDShipActionLogCruiseReportAction );
     converterMenu->addSeparator();
     converterMenu->addAction( convertNyaUASwithoutOzoneAction );
     converterMenu->addAction( convertNyaUASwithOzoneAction );

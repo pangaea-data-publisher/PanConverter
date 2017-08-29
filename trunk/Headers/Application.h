@@ -118,6 +118,7 @@ public:
     int createMastertrackImportFile( const int Resolution );
     int convertNOAA_IOAS( const int Type, const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertDShipActionLog( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
+    int convertDShipActionLogCruiseReport( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertTSG( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int CliwocConverter( const QString &FilenameIn, const QString &FilenameOut, const QString &FilenameConf, const int NumOfFiles );
     int WOCEWHPConverter( const QString &FilenameIn, const QString &FilenameOut );
@@ -191,6 +192,7 @@ private slots:
     void doConvertCHUAN_station();
     void doConvertCHUAN_moving();
     void doConvertDShipActionLog();
+    void doConvertDShipActionLogCruiseReport();
     void doConvertMastertrack();
     void doCreateMastertrackImportFile_30sec();
     void doCreateMastertrackImportFile_1min();
@@ -303,6 +305,7 @@ private:
     QAction *convertNyaUASwithOzoneAction;
     QAction *convertCLIWOCAction;
     QAction *convertDShipActionLogAction;
+    QAction *convertDShipActionLogCruiseReportAction;
     QAction *convertCHUAN_stationAction;
     QAction *convertCHUAN_movingAction;
     QAction *convertMastertrackAction;

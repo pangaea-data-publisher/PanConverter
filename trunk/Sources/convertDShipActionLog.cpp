@@ -7,6 +7,156 @@
 // **********************************************************************************************
 // **********************************************************************************************
 // **********************************************************************************************
+// 2017-08-29
+
+int MainWindow::convertDShipActionLogCruiseReport( const QString &s_FilenameIn, const QString &s_FilenameOut, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const int i_NumOfFiles )
+{
+    int         i               = 1;
+    int         n               = 0;
+
+    int			stopProgress	= 0;
+
+    QString     s_EOL           = setEOLChar( i_EOL );
+
+    QStringList sl_Input;
+
+// **********************************************************************************************
+// read file
+
+    if ( ( n = readFile( s_FilenameIn, sl_Input, i_CodecInput ) ) < 1 )
+        return( -10 );
+
+// **********************************************************************************************
+// open output file
+
+    QFile fout( s_FilenameOut );
+
+    if ( fout.open( QIODevice::WriteOnly | QIODevice::Text) == false )
+        return( -20 );
+
+    QTextStream tout( &fout );
+
+    switch ( i_CodecOutput )
+    {
+    case _SYSTEM_:
+        break;
+    case _LATIN1_:
+        tout.setCodec( QTextCodec::codecForName( "ISO 8859-1" ) );
+        break;
+    case _APPLEROMAN_:
+        tout.setCodec( QTextCodec::codecForName( "Apple Roman" ) );
+        break;
+    default:
+        tout.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+        break;
+    }
+
+// **********************************************************************************************
+
+    initProgress( i_NumOfFiles, s_FilenameIn, tr( "Converting DShip ActionLog..." ), sl_Input.count() );
+
+// **********************************************************************************************
+
+    tout << "Campaign" << "\t" << "Station" << "\t" << "Date" << "\t" << "Time" << "\t";
+    tout << "Position Latitude" << "\t" << "Position Longitude" << "\t" << "Depth (m)" << "\t";
+    tout << "Gear" << "\t" << "Action" << "\t" << "Comment" << "\t" << "Action flag" << s_EOL;
+
+// **********************************************************************************************
+
+    const int STATIONSTART = 1;
+    const int PROFILESTART = 2;
+    const int ATDEPTH      = 3;
+    const int PROFILEEND   = 4;
+    const int STATIONEND   = 5;
+
+    while ( ( i<sl_Input.count() ) && ( stopProgress != _APPBREAK_ ) )
+    {
+        int     i_Action   = 0;
+        QString s_DateTime = "";
+
+        if ( sl_Input.at( i ).section( "\t", 6, 6 ).isEmpty() == false )
+        {
+            i_Action   = STATIONSTART;
+            s_DateTime = sl_Input.at( i ).section( "\t", 6, 6 );
+        }
+
+        if ( sl_Input.at( i ).section( "\t", 11, 11 ).isEmpty() == false )
+        {
+            i_Action   = PROFILESTART;
+            s_DateTime = sl_Input.at( i ).section( "\t", 11, 11 );
+        }
+
+        if ( sl_Input.at( i ).section( "\t", 16, 16 ).isEmpty() == false )
+        {
+            i_Action   = ATDEPTH;
+            s_DateTime = sl_Input.at( i ).section( "\t", 26, 26 );
+        }
+
+        if ( sl_Input.at( i ).section( "\t", 26, 26 ).isEmpty() == false )
+        {
+            i_Action   = PROFILEEND;
+            s_DateTime = sl_Input.at( i ).section( "\t", 26, 26 );
+        }
+
+        if ( sl_Input.at( i ).section( "\t", 21, 21 ).isEmpty() == false )
+        {
+            i_Action   = STATIONEND;
+            s_DateTime = sl_Input.at( i ).section( "\t", 21, 21 );
+        }
+
+        tout << sl_Input.at( i ).section( "\t", 0, 1 ) << "\t"; // Campaign, Station
+
+        tout << s_DateTime.section( " ", 0, 0 ).replace( "/", "-" ) << "\t"; // Date
+        tout << s_DateTime.section( " ", 1, 1 ).section( ":", 0, 2 ) << "\t"; // Time
+        tout << sl_Input.at( i ).section( "\t", 7, 9 ) << "\t"; // Latitude, Longitude, Water depth
+        tout << sl_Input.at( i ).section( "\t", 5, 5 ) << "\t"; // Device Code
+
+        switch ( i_Action )
+        {
+        case STATIONSTART:
+            tout << "Station Start" << "\t" << STATIONSTART;
+            break;
+
+        case PROFILESTART:
+            tout << "Profile Start" << "\t" << STATIONEND;
+            break;
+
+        case ATDEPTH:
+            tout << "at Depth" << "\t" << ATDEPTH;
+            break;
+
+        case PROFILEEND:
+            tout << "Profile End" << "\t" << PROFILEEND;
+            break;
+
+        case STATIONEND:
+            tout << "Station End" << "\t" << STATIONEND;
+            break;
+
+        default:
+            tout << "" << "\t" << "0";
+            break;
+        }
+
+        tout << s_EOL;
+
+        stopProgress = incProgress( i_NumOfFiles, ++i );
+    }
+
+    fout.close();
+
+    resetProgress( i_NumOfFiles );
+
+    if ( stopProgress == _APPBREAK_ )
+        return( _APPBREAK_ );
+
+    return( _NOERROR_ );
+}
+
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
 // 2017-04-19
 
 int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QString &s_FilenameOut, const int i_CodecInput, const int i_CodecOutput, const int i_EOL, const int i_NumOfFiles )
@@ -251,7 +401,55 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
 // **********************************************************************************************
 // **********************************************************************************************
 // **********************************************************************************************
-// 2011-05-31
+// 2017-08-29
+
+void MainWindow::doConvertDShipActionLogCruiseReport()
+{
+    int     i               = 0;
+    int     err             = 0;
+    int     stopProgress    = 0;
+
+    QString s_FilenameIn    = "";
+    QString s_FilenameOut   = "";
+
+// **********************************************************************************************
+
+    if ( existsFirstFile( gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList ) == true )
+    {
+        initFileProgress( gsl_FilenameList.count(), gsl_FilenameList.at( 0 ), tr( "Convert DShip ActionLog..." ) );
+
+        while ( ( i < gsl_FilenameList.count() ) && ( err == _NOERROR_ ) && ( stopProgress != _APPBREAK_ ) )
+        {
+            if ( buildFilename( gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList.at( i ), s_FilenameIn, s_FilenameOut ) == true )
+            {
+                err = convertDShipActionLogCruiseReport( s_FilenameIn, s_FilenameOut, gi_CodecInput, gi_CodecOutput, gi_EOL, gsl_FilenameList.count() );
+
+                stopProgress = incFileProgress( gsl_FilenameList.count(), ++i );
+            }
+            else
+            {
+                err = _FILENOTEXISTS_;
+            }
+        }
+
+        resetFileProgress( gsl_FilenameList.count() );
+    }
+    else
+    {
+        err = _CHOOSEABORTED_;
+    }
+
+// **********************************************************************************************
+
+    endTool( err, stopProgress, gi_ActionNumber, gs_FilenameFormat, gi_Extension, gsl_FilenameList, tr( "Done" ), tr( "Converting DShip ActionLog was canceled" ) );
+
+    onError( err );
+}
+
+// **********************************************************************************************
+// **********************************************************************************************
+// **********************************************************************************************
+// 2017-04-19
 
 void MainWindow::doConvertDShipActionLog()
 {
