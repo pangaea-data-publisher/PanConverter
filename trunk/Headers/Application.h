@@ -119,6 +119,7 @@ public:
     int convertNOAA_IOAS( const int Type, const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertDShipActionLog( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int convertDShipActionLogCruiseReport( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
+
     int convertTSG( const QString &FilenameIn, const QString &FilenameOut, const int CodecInput, const int CodecOutput, const int EOL, const int NumOfFiles );
     int CliwocConverter( const QString &FilenameIn, const QString &FilenameOut, const QString &FilenameConf, const int NumOfFiles );
     int WOCEWHPConverter( const QString &FilenameIn, const QString &FilenameOut );
@@ -138,6 +139,12 @@ public:
     QString findExpedition( const QString &Filename, const QStringList &sl_crInput );
 
     int findExpeditionID( const QString &Expedition, const QStringList &crInput );
+
+    QString getDateTime( const QString Input, const int Column );
+    QString getLatitude( const QString Input, const int ColumnLatitude, const int ColumnLongitude, const int Format );
+    QString getLongitude( const QString Input, const int ColumnLatitude, const int ColumnLongitude, const int Format );
+    QString getDepth( const QString Input, const int Column );
+    QString getAction( const QString Input, const int Column );
 
     QString OpenDataDescriptionHeader();
     QString CloseDataDescriptionHeader();

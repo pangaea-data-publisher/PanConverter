@@ -79,13 +79,20 @@
     const int   _CSV_                                = 1;
 
 // Relation Types
-    const int   _REPLACEDBY_             = 10;       // Replaced by
-    const int   _SUPPLEMENTTO_           = 11;       // Supplement to
-    const int   _RELATEDTO_              = 12;       // Related to = IsCitedBy
-    const int   _OTHERVERSION_           = 13;       // Other version
-    const int   _NEWVERSION_             = 14;       // New version
-    const int   _ORIGINALVERSION_        = 15;       // Original version
-    const int   _SOURCEDATASET_          = 16;       // Source data set
-    const int   _FURTHERDETAILS_         = 17;       // Further details
+    const int   _REPLACEDBY_                         = 10;       // Replaced by
+    const int   _SUPPLEMENTTO_                       = 11;       // Supplement to
+    const int   _RELATEDTO_                          = 12;       // Related to = IsCitedBy
+    const int   _OTHERVERSION_                       = 13;       // Other version
+    const int   _NEWVERSION_                         = 14;       // New version
+    const int   _ORIGINALVERSION_                    = 15;       // Original version
+    const int   _SOURCEDATASET_                      = 16;       // Source data set
+    const int   _FURTHERDETAILS_                     = 17;       // Further details
+
+// Cruise report
+    const int   STATIONSTART                         = 1;
+    const int   PROFILESTART                         = 2;
+    const int   ATDEPTH                              = 3;
+    const int   PROFILEEND                           = 4;
+    const int   STATIONEND                           = 5;
 
 #endif
