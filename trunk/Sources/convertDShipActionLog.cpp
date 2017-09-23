@@ -485,7 +485,8 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
 
     tout << "Campaign" << "\t" << "LabelEvent" << "\t" << "Device" << "\t" << "Device (long)" << "\t" << "Action" << "\t" << "DateTimeEvent" << "\t";
     tout << "LatitudeEvent" << "\t" << "LongitudeEvent" << "\t" << "ElevationEvent" << "\t";
-    tout << "Action2" << "\t" << "DateTimeEvent2" << "\t" << "LatitudeEvent2" << "\t" << "LongitudeEvent2" << "\t" << "ElevationEvent2" << s_EOL;
+    tout << "Action2" << "\t" << "DateTimeEvent2" << "\t" << "LatitudeEvent2" << "\t" << "LongitudeEvent2" << "\t" << "ElevationEvent2" << "\t";
+    tout << "Site" << "\t" << "Event" << "\t" << "No" << s_EOL;
 
 // **********************************************************************************************
 
@@ -595,7 +596,8 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
                 tout << s_CampaignLabel + "\t";
                 tout << s_EventLabel << "\t" << s_Device << "\t";
                 tout << sl_Input.at( i_first ).section( "\t", i_DeviceLong, i_DeviceLong ) << "\t" << sl_Input.at( i_first ).section( "\t", i_Action, i_Action ) << "\t";
-                tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << s_EOL;
+                tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << "\t\t\t\t\t\t";
+                tout << s_EventLabel.section( "_", 1, 1 ).section( "-", 0, 0 ) << "\t" << s_EventLabel.section( "-", 1, 1 ) << s_EOL;
             }
             else
             {
@@ -604,7 +606,8 @@ int MainWindow::convertDShipActionLog( const QString &s_FilenameIn, const QStrin
                 tout << sl_Input.at( i_first ).section( "\t", i_DeviceLong, i_DeviceLong ) << "\t" << sl_Input.at( i_first ).section( "\t", i_Action, i_Action ) << "\t";
                 tout << s_DateTime1 << "\t" << s_Latitude1 << "\t" << s_Longitude1 << "\t" << s_Elevation1 << "\t";
                 tout << sl_Input.at( i_last ).section( "\t", i_Action, i_Action ) << "\t";
-                tout << s_DateTime2 << "\t" << s_Latitude2 << "\t" << s_Longitude2 << "\t" << s_Elevation2 << s_EOL;
+                tout << s_DateTime2 << "\t" << s_Latitude2 << "\t" << s_Longitude2 << "\t" << s_Elevation2 << "\t";
+                tout << s_EventLabel.section( "_", 1, 1 ).section( "-", 0, 0 ) << "\t" << s_EventLabel.section( "-", 1, 1 ) << s_EOL;
             }
 
             i_first = i;
